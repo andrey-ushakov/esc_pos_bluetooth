@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  rxdart: ^0.23.1
+  esc_pos_utils: ^0.1.2
+  flutter_bluetooth_basic: ^0.1.2
 
 dev_dependencies:
   flutter_test:

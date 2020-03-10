@@ -1,7 +1,11 @@
+/*
+ * esc_pos_bluetooth
+ * Created by Andrey Ushakov
+ * 
+ * Copyright (c) 2020. All rights reserved.
+ * See LICENSE for distribution and usage details.
+ */
 library esc_pos_bluetooth;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export './src/enums.dart';
+export './src/printer_bluetooth_manager.dart';
