@@ -1,19 +1,15 @@
 # esc_pos_bluetooth
 
-The library allows to print receipts using an ESC/POS thermal WiFi/Ethernet printer.
+The library allows to print receipts using a Bluetooth printer. For WiFi/Ethernet printers, use [esc_pos_printer](https://github.com/andrey-ushakov/esc_pos_printer) library.
 
-[[pub.dev page]](https://pub.dev/packages/esc_pos_printer)
-| [[Documentation]](https://pub.dev/documentation/esc_pos_printer/latest/)
+[[pub.dev page]](https://pub.dev/packages/esc_pos_bluetooth)
+| [[Documentation]](https://pub.dev/documentation/esc_pos_bluetooth/latest/)
 
-It can be used in [Flutter](https://flutter.dev/) or pure [Dart](https://dart.dev/) projects. For Flutter projects, both Android and iOS are supported.
-
-To scan for printers in your network, consider using [ping_discover_network](https://pub.dev/packages/ping_discover_network) package. Note that most of the ESC/POS printers by default listen on port 9100.
-
-**Here are some [printers tested with this library](printers.md). Please add your models you have tested to maintain and improve this library and help others to choose the right printer.**
+## Tested Printers
+Here are some [printers tested with this library](printers.md). Please add your models you have tested to maintain and improve this library and help others to choose the right printer.
 
 ## Main Features
-
-* Connect to Wi-Fi / Ethernet printers
+* Android / iOS support
 * Simple text printing using *text* method
 * Tables printing using *row* method
 * Text styling:
