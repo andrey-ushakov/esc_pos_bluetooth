@@ -1,3 +1,7 @@
+## [0.2.1]
+* Updated `esc_pos_utils` package version to `0.3.1` (Open Cash Drawer).
+
+
 ## [0.2.0]
 * Updated `esc_pos_utils` package version to `0.3.0` (Image and Barcode alignment).
 

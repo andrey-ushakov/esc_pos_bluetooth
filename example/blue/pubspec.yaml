@@ -13,7 +13,7 @@ dependencies:
   image: ^2.1.4
   esc_pos_bluetooth:
     path: ../../
-  esc_pos_utils: ^0.3.0
+  esc_pos_utils: ^0.3.1
 
 dev_dependencies:
   flutter_test:
