@@ -13,7 +13,10 @@ dependencies:
   image: ^2.1.4
   esc_pos_bluetooth:
     path: ../../
-  esc_pos_utils: ^0.3.1
+  esc_pos_utils: ^0.3.2
+  # esc_pos_utils:
+    # path: ../../../esc_pos_utils
+  charset_converter: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +26,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.png
+    - assets/logo216.png
+    - assets/logo222.png

@@ -16,14 +16,16 @@ Here are some [printers tested with this library](printers.md). Please add your 
   * size, align, bold, reverse, underline, different fonts, turn 90°
 * Print images
 * Print barcodes
-  * UPC-A, UPC-E, JAN13 (EAN13), JAN8 (EAN8), CODE39, ITF (Interleaved 2 of 5), CODABAR (NW-7)
+  * UPC-A, UPC-E, JAN13 (EAN13), JAN8 (EAN8), CODE39, ITF (Interleaved 2 of 5), CODABAR (NW-7), CODE128
 * Paper cut (partial, full)
 * Beeping (with different duration)
 * Paper feed, reverse feed
 
 **Note**: Your printer may not support some of the presented features (especially for underline styles, partial/full paper cutting, reverse feed, ...).
 
-## Getting started (Generate a ticket)
+## Getting started: Generate a Ticket
+
+### Simple ticket:
 ```dart
 Ticket testTicket() {
   final Ticket ticket = Ticket(PaperSize.mm80);
@@ -55,7 +57,8 @@ Ticket testTicket() {
   return ticket;
 }
 ```
-Print a table row:
+
+### Print a table row:
 
 ```dart
 ticket.row([
@@ -77,24 +80,59 @@ ticket.row([
   ]);
 ```
 
-Print an image:
+### Print an image:
+
+This package implements 3 ESC/POS functions:
+* `ESC *` - print in column format
+* `GS v 0` - print in bit raster format (obsolete)
+* `GS ( L` - print in bit raster format
+
+Note that your printer may support only some of the above functions.
 
 ```dart
 import 'dart:io';
 import 'package:image/image.dart';
 
-const String filename = './logo.png';
-final Image image = decodeImage(File(filename).readAsBytesSync());
-// Using (ESC *) command
+final ByteData data = await rootBundle.load('assets/logo.png');
+final Uint8List bytes = data.buffer.asUint8List();
+final Image image = decodeImage(bytes);
+// Using `ESC *`
 ticket.image(image);
-// Using an alternative obsolette (GS v 0) command
+// Using `GS v 0` (obsolete)
 ticket.imageRaster(image);
+// Using `GS ( L`
+ticket.imageRaster(image, imageFn: PosImageFn.graphics);
 ```
 
-Print a barcode:
+### Print a barcode:
+
 ```dart
 final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4];
 ticket.barcode(Barcode.upcA(barData));
+```
+
+### Print a QR Code:
+
+To print a QR Code, add [qr_flutter](https://pub.dev/packages/qr_flutter) and [path_provider](https://pub.dev/packages/path_provider) as a dependency in your `pubspec.yaml` file.
+```dart
+String qrData = "google.com";
+const double qrSize = 200;
+try {
+  final uiImg = await QrPainter(
+    data: qrData,
+    version: QrVersions.auto,
+    gapless: false,
+  ).toImageData(qrSize);
+  final dir = await getTemporaryDirectory();
+  final pathName = '${dir.path}/qr_tmp.png';
+  final qrFile = File(pathName);
+  final imgFile = await qrFile.writeAsBytes(uiImg.buffer.asUint8List());
+  final img = decodeImage(imgFile.readAsBytesSync());
+
+  ticket.image(img);
+} catch (e) {
+  print(e);
+}
 ```
 
 ## Getting Started (Bluetooth printer)
