@@ -2,30 +2,13 @@
 
 The library allows to print receipts using a Bluetooth printer. For WiFi/Ethernet printers, use [esc_pos_printer](https://github.com/andrey-ushakov/esc_pos_printer) library.
 
-[[pub.dev page]](https://pub.dev/packages/esc_pos_bluetooth)
-| [[Documentation]](https://pub.dev/documentation/esc_pos_bluetooth/latest/)
-
 ## Tested Printers
 Here are some [printers tested with this library](printers.md). Please add your models you have tested to maintain and improve this library and help others to choose the right printer.
 
-## Main Features
-* Android / iOS support
-* Simple text printing using *text* method
-* Tables printing using *row* method
-* Text styling:
-  * size, align, bold, reverse, underline, different fonts, turn 90°
-* Print images
-* Print barcodes
-  * UPC-A, UPC-E, JAN13 (EAN13), JAN8 (EAN8), CODE39, ITF (Interleaved 2 of 5), CODABAR (NW-7), CODE128
-* Paper cut (partial, full)
-* Beeping (with different duration)
-* Paper feed, reverse feed
 
-**Note**: Your printer may not support some of the presented features (especially for underline styles, partial/full paper cutting, reverse feed, ...).
+## Generate a Ticket
 
-## Getting started: Generate a Ticket
-
-### Simple ticket:
+### Simple Ticket with Styles:
 ```dart
 Ticket testTicket() {
   final Ticket ticket = Ticket(PaperSize.mm80);
@@ -58,84 +41,10 @@ Ticket testTicket() {
 }
 ```
 
-### Print a table row:
+You can find more examples here: [esc_pos_utils](https://github.com/andrey-ushakov/esc_pos_utils).
 
-```dart
-ticket.row([
-    PosColumn(
-      text: 'col3',
-      width: 3,
-      styles: PosStyles(align: PosAlign.center, underline: true),
-    ),
-    PosColumn(
-      text: 'col6',
-      width: 6,
-      styles: PosStyles(align: PosAlign.center, underline: true),
-    ),
-    PosColumn(
-      text: 'col3',
-      width: 3,
-      styles: PosStyles(align: PosAlign.center, underline: true),
-    ),
-  ]);
-```
 
-### Print an image:
-
-This package implements 3 ESC/POS functions:
-* `ESC *` - print in column format
-* `GS v 0` - print in bit raster format (obsolete)
-* `GS ( L` - print in bit raster format
-
-Note that your printer may support only some of the above functions.
-
-```dart
-import 'dart:io';
-import 'package:image/image.dart';
-
-final ByteData data = await rootBundle.load('assets/logo.png');
-final Uint8List bytes = data.buffer.asUint8List();
-final Image image = decodeImage(bytes);
-// Using `ESC *`
-ticket.image(image);
-// Using `GS v 0` (obsolete)
-ticket.imageRaster(image);
-// Using `GS ( L`
-ticket.imageRaster(image, imageFn: PosImageFn.graphics);
-```
-
-### Print a barcode:
-
-```dart
-final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4];
-ticket.barcode(Barcode.upcA(barData));
-```
-
-### Print a QR Code:
-
-To print a QR Code, add [qr_flutter](https://pub.dev/packages/qr_flutter) and [path_provider](https://pub.dev/packages/path_provider) as a dependency in your `pubspec.yaml` file.
-```dart
-String qrData = "google.com";
-const double qrSize = 200;
-try {
-  final uiImg = await QrPainter(
-    data: qrData,
-    version: QrVersions.auto,
-    gapless: false,
-  ).toImageData(qrSize);
-  final dir = await getTemporaryDirectory();
-  final pathName = '${dir.path}/qr_tmp.png';
-  final qrFile = File(pathName);
-  final imgFile = await qrFile.writeAsBytes(uiImg.buffer.asUint8List());
-  final img = decodeImage(imgFile.readAsBytesSync());
-
-  ticket.image(img);
-} catch (e) {
-  print(e);
-}
-```
-
-## Getting Started (Bluetooth printer)
+## Print a Ticket
 
 ```dart
 PrinterBluetoothManager printerManager = PrinterBluetoothManager();
@@ -153,12 +62,14 @@ final PosPrintResult res = await printerManager.printTicket(testTicket());
 print('Print result: ${res.msg}');
 ```
 
-For more details, check the demo project *example/blue*.
+For a complete example, check the demo project `example/blue`.
 
-## Test print
+
+## How to Help
+* Test your printer and add it in the table: [Wifi/Network printer](https://github.com/andrey-ushakov/esc_pos_printer/blob/master/printers.md) or [Bluetooth printer](https://github.com/andrey-ushakov/esc_pos_bluetooth/blob/master/printers.md)
+* Test and report bugs
+* Share your ideas about what could be improved (code optimization, new features...)
+
+
+## Test Print
 <img src="https://github.com/andrey-ushakov/esc_pos_printer/blob/master/example/receipt.jpg?raw=true" alt="test receipt" height="500"/>
-
-## Support
-If this package was helpful, a cup of coffee would be highly appreciated :)
-
-[<img src="https://az743702.vo.msecnd.net/cdn/kofi2.png?v=2" width="200">](https://ko-fi.com/andreydev)
