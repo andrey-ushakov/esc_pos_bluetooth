@@ -74,4 +74,6 @@ For a complete example, check the demo project `example/blue`.
 
 
 ## Test Print
+<img src="https://github.com/andrey-ushakov/esc_pos_printer/blob/master/example/receipt2.jpg?raw=true" alt="test receipt" height="800"/>
+
 <img src="https://github.com/andrey-ushakov/esc_pos_printer/blob/master/example/receipt.jpg?raw=true" alt="test receipt" height="500"/>
