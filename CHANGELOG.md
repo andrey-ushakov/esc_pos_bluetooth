@@ -1,3 +1,7 @@
+## [0.2.4]
+* `startScan` timeout bug fixed.
+
+
 ## [0.2.3]
 * Updated `esc_pos_utils` package version to `0.3.3`.
 

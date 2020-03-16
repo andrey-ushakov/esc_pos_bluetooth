@@ -45,7 +45,7 @@ class PrinterBluetoothManager {
   void startScan(Duration timeout) async {
     _scanResults.add(<PrinterBluetooth>[]);
 
-    _bluetoothManager.startScan(timeout: Duration(seconds: 4));
+    _bluetoothManager.startScan(timeout: timeout);
 
     _scanResultsSubscription = _bluetoothManager.scanResults.listen((devices) {
       _scanResults.add(devices.map((d) => PrinterBluetooth(d)).toList());
