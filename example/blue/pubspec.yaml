@@ -13,10 +13,13 @@ dependencies:
   image: ^2.1.4
   esc_pos_bluetooth:
     path: ../../
-  esc_pos_utils: ^0.3.3
+  esc_pos_utils: ^0.3.4
   # esc_pos_utils:
     # path: ../../../esc_pos_utils
   charset_converter: ^1.0.3
+  intl: ^0.16.1
+  qr_flutter: ^3.2.0
+  path_provider: ^1.6.5
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +31,4 @@ flutter:
     - assets/logo.png
     - assets/logo216.png
     - assets/logo222.png
+    - assets/rabbit_black.jpg
