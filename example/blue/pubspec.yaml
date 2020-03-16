@@ -13,7 +13,7 @@ dependencies:
   image: ^2.1.4
   esc_pos_bluetooth:
     path: ../../
-  esc_pos_utils: ^0.3.2
+  esc_pos_utils: ^0.3.3
   # esc_pos_utils:
     # path: ../../../esc_pos_utils
   charset_converter: ^1.0.3
