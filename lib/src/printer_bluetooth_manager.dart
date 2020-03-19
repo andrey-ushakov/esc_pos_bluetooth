@@ -7,6 +7,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart';
@@ -70,7 +71,11 @@ class PrinterBluetoothManager {
     _selectedPrinter = printer;
   }
 
-  Future<PosPrintResult> writeBytes(List<int> bytes) async {
+  Future<PosPrintResult> writeBytes(
+    List<int> bytes, {
+    int chunkSizeBytes = 20,
+    int queueSleepTimeMs = 20,
+  }) async {
     final Completer<PosPrintResult> completer = Completer();
 
     const int timeout = 5;
@@ -97,7 +102,18 @@ class PrinterBluetoothManager {
         case BluetoothManager.CONNECTED:
           // To avoid double call
           if (!_isConnected) {
-            await _bluetoothManager.writeData(bytes);
+            final len = bytes.length;
+            List<List<int>> chunks = [];
+            for (var i = 0; i < len; i += chunkSizeBytes) {
+              var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
+              chunks.add(bytes.sublist(i, end));
+            }
+
+            for (var i = 0; i < chunks.length; i += 1) {
+              await _bluetoothManager.writeData(chunks[i]);
+              sleep(Duration(milliseconds: queueSleepTimeMs));
+            }
+
             completer.complete(PosPrintResult.success);
           }
           // TODO sending disconnect signal should be event-based
@@ -126,10 +142,18 @@ class PrinterBluetoothManager {
     return completer.future;
   }
 
-  Future<PosPrintResult> printTicket(Ticket ticket) async {
+  Future<PosPrintResult> printTicket(
+    Ticket ticket, {
+    int chunkSizeBytes = 20,
+    int queueSleepTimeMs = 20,
+  }) async {
     if (ticket == null || ticket.bytes.isEmpty) {
       return Future<PosPrintResult>.value(PosPrintResult.ticketEmpty);
     }
-    return writeBytes(ticket.bytes);
+    return writeBytes(
+      ticket.bytes,
+      chunkSizeBytes: chunkSizeBytes,
+      queueSleepTimeMs: queueSleepTimeMs,
+    );
   }
 }
