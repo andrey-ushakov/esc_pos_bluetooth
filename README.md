@@ -4,6 +4,20 @@
 
 The library allows to print receipts using a Bluetooth printer. For WiFi/Ethernet printers, use [esc_pos_printer](https://github.com/andrey-ushakov/esc_pos_printer) library.
 
+
+## TODO (PRs are welcomed!)
+* Split byte data into chunks: [issue](https://github.com/andrey-ushakov/esc_pos_bluetooth/issues/5)
+* Print QR Codes using `GS ( k` command (printing QR code from an image already supported)
+* PDF-417 Barcodes using `GS ( k` command
+
+
+## How to Help
+* Test your printer and add it in the table: [Wifi/Network printer](https://github.com/andrey-ushakov/esc_pos_printer/blob/master/printers.md) or [Bluetooth printer](https://github.com/andrey-ushakov/esc_pos_bluetooth/blob/master/printers.md)
+* Test and report bugs
+* Share your ideas about what could be improved (code optimization, new features...)
+* PRs are welcomed!
+
+
 ## Tested Printers
 Here are some [printers tested with this library](printers.md). Please add the models you have tested to maintain and improve this library and help others to choose the right printer.
 
@@ -65,12 +79,6 @@ print('Print result: ${res.msg}');
 ```
 
 For a complete example, check the demo project `example/blue`.
-
-
-## How to Help
-* Test your printer and add it in the table: [Wifi/Network printer](https://github.com/andrey-ushakov/esc_pos_printer/blob/master/printers.md) or [Bluetooth printer](https://github.com/andrey-ushakov/esc_pos_bluetooth/blob/master/printers.md)
-* Test and report bugs
-* Share your ideas about what could be improved (code optimization, new features...)
 
 
 ## Test Print
