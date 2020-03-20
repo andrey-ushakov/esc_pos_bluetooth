@@ -78,7 +78,11 @@ final PosPrintResult res = await printerManager.printTicket(testTicket());
 print('Print result: ${res.msg}');
 ```
 
-For a complete example, check the demo project `example/blue`.
+For a complete example, check the demo project [example/blue](example/blue).
+
+
+## Troubleshooting
+* If your printer prints only 5%-10% of an image and then stops, or it can't print more than 1 image on the same ticket, or it can't print long tickets, try to ajust `queueSleepTimeMs` of the `PrinterBluetoothManager.printTicket` (try 50 or 100ms): `printerManager.printTicket(await demoReceipt(paper), queueSleepTimeMs: 50);`
 
 
 ## Test Print
