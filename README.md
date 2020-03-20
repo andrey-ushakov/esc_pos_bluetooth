@@ -7,9 +7,9 @@ The library allows to print receipts using a Bluetooth printer. For WiFi/Etherne
 
 ## TODO (PRs are welcomed!)
 * Split byte data into chunks: [issue](https://github.com/andrey-ushakov/esc_pos_bluetooth/issues/5)
-* Print QR Codes using `GS ( k` command (printing QR code from an image already supported)
-* PDF-417 Barcodes using `GS ( k` command
-
+* Print QR Codes using the `GS ( k` command (printing QR code from an image already supported)
+* PDF-417 Barcodes using the `GS ( k` command
+* Line spacing using the `ESC 3 <n>` command
 
 ## How to Help
 * Test your printer and add it in the table: [Wifi/Network printer](https://github.com/andrey-ushakov/esc_pos_printer/blob/master/printers.md) or [Bluetooth printer](https://github.com/andrey-ushakov/esc_pos_bluetooth/blob/master/printers.md)
