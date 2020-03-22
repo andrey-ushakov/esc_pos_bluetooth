@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
     final Uint8List bytes = data.buffer.asUint8List();
     final Image image = decodeImage(bytes);
-    ticket.image(image);
+    // ticket.image(image);
 
     ticket.text('GROCERYLY',
         styles: PosStyles(
@@ -152,21 +152,21 @@ class _MyHomePageState extends State<MyHomePage> {
     ticket.row([
       PosColumn(
           text: 'Cash',
-          width: 8,
+          width: 7,
           styles: PosStyles(align: PosAlign.right, width: PosTextSize.size2)),
       PosColumn(
           text: '\$15.00',
-          width: 4,
+          width: 5,
           styles: PosStyles(align: PosAlign.right, width: PosTextSize.size2)),
     ]);
     ticket.row([
       PosColumn(
           text: 'Change',
-          width: 8,
+          width: 7,
           styles: PosStyles(align: PosAlign.right, width: PosTextSize.size2)),
       PosColumn(
           text: '\$4.03',
-          width: 4,
+          width: 5,
           styles: PosStyles(align: PosAlign.right, width: PosTextSize.size2)),
     ]);
 
@@ -194,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final imgFile = await qrFile.writeAsBytes(uiImg.buffer.asUint8List());
       final img = decodeImage(imgFile.readAsBytesSync());
 
-      ticket.image(img);
+      // ticket.image(img);
     } catch (e) {
       print(e);
     }
@@ -277,7 +277,7 @@ class _MyHomePageState extends State<MyHomePage> {
     printerManager.selectPrinter(printer);
 
     // TODO Don't forget to choose printer's paper
-    const PaperSize paper = PaperSize.mm58;
+    const PaperSize paper = PaperSize.mm80;
 
     // TEST PRINT
     // final PosPrintResult res =
