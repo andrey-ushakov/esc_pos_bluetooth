@@ -1,3 +1,7 @@
+## [0.2.6]
+* Updated flutter_bluetooth_basic
+
+
 ## [0.2.5]
 * Split data into chunks
 
