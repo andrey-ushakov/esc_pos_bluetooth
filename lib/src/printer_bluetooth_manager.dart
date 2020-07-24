@@ -39,6 +39,10 @@ class PrinterBluetoothManager {
       BehaviorSubject.seeded([]);
   Stream<List<PrinterBluetooth>> get scanResults => _scanResults.stream;
 
+  List<int> _bufferedBytes = [];
+  int _queueSleepTimeMs = 20;
+  int _chunkSizeBytes = 20;
+
   Future _runDelayed(int seconds) {
     return Future<dynamic>.delayed(Duration(seconds: seconds));
   }
@@ -69,12 +73,27 @@ class PrinterBluetoothManager {
 
   void selectPrinter(PrinterBluetooth printer) {
     _selectedPrinter = printer;
+    _bluetoothManager.state.listen((state) async {
+      switch (state) {
+        case BluetoothManager.CONNECTED:
+          _isConnected = true;
+          if (_bufferedBytes.isNotEmpty) {
+            await _writePending();
+          }
+          await _bluetoothManager.disconnect();
+          break;
+        case BluetoothManager.DISCONNECTED:
+          _isConnected = false;
+          break;
+        default:
+          break;
+      }
+      print('BluetoothManager.STATE => $state');
+    });
   }
 
   Future<PosPrintResult> writeBytes(
     List<int> bytes, {
-    int chunkSizeBytes = 20,
-    int queueSleepTimeMs = 20,
     int timeout = 5,
   }) async {
     final Completer<PosPrintResult> completer = Completer();
@@ -87,8 +106,6 @@ class PrinterBluetoothManager {
       return Future<PosPrintResult>.value(PosPrintResult.printInProgress);
     }
 
-    _isPrinting = true;
-
     // We have to rescan before connecting, otherwise we can connect only once
     await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
     await _bluetoothManager.stopScan();
@@ -96,47 +113,13 @@ class PrinterBluetoothManager {
     // Connect
     await _bluetoothManager.connect(_selectedPrinter._device);
 
-    // Subscribe to the events
-    _bluetoothManager.state.listen((state) async {
-      switch (state) {
-        case BluetoothManager.CONNECTED:
-          // To avoid double call
-          if (!_isConnected) {
-            final len = bytes.length;
-            List<List<int>> chunks = [];
-            for (var i = 0; i < len; i += chunkSizeBytes) {
-              var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
-              chunks.add(bytes.sublist(i, end));
-            }
-
-            for (var i = 0; i < chunks.length; i += 1) {
-              await _bluetoothManager.writeData(chunks[i]);
-              sleep(Duration(milliseconds: queueSleepTimeMs));
-            }
-
-            completer.complete(PosPrintResult.success);
-          }
-          // TODO sending disconnect signal should be event-based
-          _runDelayed(3).then((dynamic v) async {
-            await _bluetoothManager.disconnect();
-            _isPrinting = false;
-          });
-          _isConnected = true;
-          break;
-        case BluetoothManager.DISCONNECTED:
-          _isConnected = false;
-          break;
-        default:
-          break;
-      }
-    });
-
     // Printing timeout
     _runDelayed(timeout).then((dynamic v) async {
       if (_isPrinting) {
         _isPrinting = false;
         completer.complete(PosPrintResult.timeout);
       }
+      completer.complete(PosPrintResult.success);
     });
 
     return completer.future;
@@ -151,11 +134,30 @@ class PrinterBluetoothManager {
     if (ticket == null || ticket.bytes.isEmpty) {
       return Future<PosPrintResult>.value(PosPrintResult.ticketEmpty);
     }
+
+    _bufferedBytes = ticket.bytes;
+    _queueSleepTimeMs = queueSleepTimeMs;
+    _chunkSizeBytes = chunkSizeBytes;
+
     return writeBytes(
       ticket.bytes,
-      chunkSizeBytes: chunkSizeBytes,
-      queueSleepTimeMs: queueSleepTimeMs,
       timeout: timeout,
     );
+  }
+
+  Future<void> _writePending() async {
+    final len = _bufferedBytes.length;
+    List<List<int>> chunks = [];
+    for (var i = 0; i < len; i += _chunkSizeBytes) {
+      var end = (i + _chunkSizeBytes < len) ? i + _chunkSizeBytes : len;
+      chunks.add(_bufferedBytes.sublist(i, end));
+    }
+    _isPrinting = true;
+    for (var i = 0; i < chunks.length; i += 1) {
+      await _bluetoothManager.writeData(chunks[i]);
+      sleep(Duration(milliseconds: _queueSleepTimeMs));
+    }
+    _isPrinting = false;
+    _bufferedBytes = [];
   }
 }
