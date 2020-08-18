@@ -8,9 +8,11 @@
 
 import 'dart:async';
 import 'dart:io';
+
 import 'package:esc_pos_utils/esc_pos_utils.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart';
+import 'package:rxdart/rxdart.dart';
+
 import './enums.dart';
 
 /// Bluetooth printer
@@ -80,7 +82,6 @@ class PrinterBluetoothManager {
           if (_bufferedBytes.isNotEmpty) {
             await _writePending();
           }
-          await _bluetoothManager.disconnect();
           break;
         case BluetoothManager.DISCONNECTED:
           _isConnected = false;
@@ -120,6 +121,7 @@ class PrinterBluetoothManager {
         completer.complete(PosPrintResult.timeout);
       }
       completer.complete(PosPrintResult.success);
+      await _bluetoothManager.disconnect();
     });
 
     return completer.future;
