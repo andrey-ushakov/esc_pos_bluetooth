@@ -147,6 +147,26 @@ class PrinterBluetoothManager {
     );
   }
 
+  Future<PosPrintResult> printLabel(
+    List<int> bytes, {
+    int chunkSizeBytes = 20,
+    int queueSleepTimeMs = 20,
+    int timeout = 5,
+  }) async {
+    if (bytes == null || bytes.isEmpty) {
+      return Future<PosPrintResult>.value(PosPrintResult.ticketEmpty);
+    }
+
+    _bufferedBytes = bytes;
+    _queueSleepTimeMs = queueSleepTimeMs;
+    _chunkSizeBytes = chunkSizeBytes;
+
+    return writeBytes(
+      bytes,
+      timeout: timeout,
+    );
+  }
+
   Future<void> _writePending() async {
     final len = _bufferedBytes.length;
     List<List<int>> chunks = [];
