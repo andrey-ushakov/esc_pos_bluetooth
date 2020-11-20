@@ -1,7 +1,7 @@
 /*
  * esc_pos_bluetooth
  * Created by Andrey Ushakov
- * 
+ *
  * Copyright (c) 2019-2020. All rights reserved.
  * See LICENSE for distribution and usage details.
  */
@@ -10,6 +10,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -44,6 +45,7 @@ class PrinterBluetoothManager {
   List<int> _bufferedBytes = [];
   int _queueSleepTimeMs = 20;
   int _chunkSizeBytes = 20;
+  int _timeOut = 5;
 
   Future _runDelayed(int seconds) {
     return Future<dynamic>.delayed(Duration(seconds: seconds));
@@ -108,7 +110,7 @@ class PrinterBluetoothManager {
     }
 
     // We have to rescan before connecting, otherwise we can connect only once
-    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
+    await _bluetoothManager.startScan(timeout: Duration(seconds: _timeOut + 2));
     await _bluetoothManager.stopScan();
 
     // Connect
@@ -121,7 +123,7 @@ class PrinterBluetoothManager {
         completer.complete(PosPrintResult.timeout);
       }
       completer.complete(PosPrintResult.success);
-      await _bluetoothManager.disconnect();
+      // await _bluetoothManager.disconnect();
     });
 
     return completer.future;
@@ -140,7 +142,7 @@ class PrinterBluetoothManager {
     _bufferedBytes = ticket.bytes;
     _queueSleepTimeMs = queueSleepTimeMs;
     _chunkSizeBytes = chunkSizeBytes;
-
+    _timeOut = timeout;
     return writeBytes(
       ticket.bytes,
       timeout: timeout,
@@ -160,7 +162,7 @@ class PrinterBluetoothManager {
     _bufferedBytes = bytes;
     _queueSleepTimeMs = queueSleepTimeMs;
     _chunkSizeBytes = chunkSizeBytes;
-
+    _timeOut = timeout;
     return writeBytes(
       bytes,
       timeout: timeout,
@@ -181,5 +183,8 @@ class PrinterBluetoothManager {
     }
     _isPrinting = false;
     _bufferedBytes = [];
+    _runDelayed(_timeOut).then((dynamic v) async {
+      await _bluetoothManager.disconnect();
+    });
   }
 }
