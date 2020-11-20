@@ -181,10 +181,10 @@ class PrinterBluetoothManager {
       await _bluetoothManager.writeData(chunks[i]);
       sleep(Duration(milliseconds: _queueSleepTimeMs));
     }
+    _isPrinting = false;
+    _bufferedBytes = [];
     _runDelayed(_timeOut).then((dynamic v) async {
       await _bluetoothManager.disconnect();
-      _isPrinting = false;
-      _bufferedBytes = [];
     });
   }
 }
