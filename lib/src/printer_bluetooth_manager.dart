@@ -100,7 +100,7 @@ class PrinterBluetoothManager {
     int timeout = 5,
   }) async {
     final Completer<PosPrintResult> completer = Completer();
-
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
     if (_selectedPrinter == null) {
       return Future<PosPrintResult>.value(PosPrintResult.printerNotSelected);
     } else if (_isScanning.value) {
