@@ -103,19 +103,19 @@ class PrinterBluetoothManager {
     // Connect
     if(!_isConnected) {
       await _selectedPrinter._device.connect();
+      _isConnected = true;
     }
 
     _selectedPrinter._device.state.listen((state)async {
       switch(state){
         case BluetoothDeviceState.connected :
-
           final len = bytes.length;
           List<List<int>> chunks = [];
           for (var i = 0; i < len; i += chunkSizeBytes) {
             var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
             chunks.add(bytes.sublist(i, end));
           }
-          if (!_isConnected) {
+          if (_isConnected) {
             await _selectedPrinter._device.discoverServices();
             _selectedPrinter._device.services.listen((event) async {
               _bluetoothServices = event;
@@ -127,7 +127,7 @@ class PrinterBluetoothManager {
                     try {
                       await characteristic.write(
                           chunks[i], withoutResponse: true);
-                      await characteristic.read();
+                      //await characteristic.read();
                       sleep(Duration(milliseconds: queueSleepTimeMs));
                     } catch (e) {
                       break;
@@ -139,14 +139,16 @@ class PrinterBluetoothManager {
 
             completer.complete(PosPrintResult.success);
             _runDelayed(3).then((dynamic v) async {
-              //await _selectedPrinter._device.disconnect();
+              await _selectedPrinter._device.disconnect();
               _isPrinting = false;
+              print("==============================> IS PRINTING FALSE");
             });
-            _isConnected = true;
+            _isConnected = false;
+            print("==============================> IS CONNECTED FALSE");
           }
           break;
         case BluetoothDeviceState.disconnected :
-          _isConnected = true;
+          _isConnected = false;
           break;
         default:
           break;
@@ -154,7 +156,12 @@ class PrinterBluetoothManager {
       }
     });
 
-
+    _runDelayed(timeout).then((dynamic v) async {
+      if (_isPrinting) {
+        _isPrinting = false;
+        completer.complete(PosPrintResult.timeout);
+      }
+    });
 
     return completer.future;
   }

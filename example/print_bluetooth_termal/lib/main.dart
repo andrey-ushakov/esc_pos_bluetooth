@@ -196,39 +196,43 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView.builder(
           itemCount: _devices.length,
           itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: () => _testPrint(_devices[index]),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: 60,
-                    padding: EdgeInsets.only(left: 10),
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.print),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(_devices[index].name ?? ''),
-                              //Text(_devices[index].address),
-                              Text(
-                                'Click to print a test receipt',
-                                style: TextStyle(color: Colors.grey[700]),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+            if(_devices[index].name.isNotEmpty || _devices[index].name != ""){
+              return InkWell(
+                onTap: () => _testPrint(_devices[index]),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: 60,
+                      padding: EdgeInsets.only(left: 10),
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.print),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(_devices[index].name ?? ''),
+                                Text(
+                                  'Click to print a test receipt',
+                                  style: TextStyle(color: Colors.grey[700]),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  Divider(),
-                ],
-              ),
-            );
+                    Divider(),
+                  ],
+                ),
+              );
+            }
+
+            return Container();
+
           }),
       floatingActionButton: StreamBuilder<bool>(
         stream: printerManager.isScanningStream,
