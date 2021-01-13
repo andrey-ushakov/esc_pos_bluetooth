@@ -96,6 +96,7 @@ class PrinterBluetoothManager {
     await _flutterBlue.stopScan();
 
     // Connect
+    print(_isConnected);
     if(!_isConnected){
       await _selectedPrinter._device.connect();
     }
