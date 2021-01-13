@@ -9,8 +9,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart';
 import './enums.dart';
 
 /// Bluetooth printer
@@ -19,18 +19,20 @@ class PrinterBluetooth {
   final BluetoothDevice _device;
 
   String get name => _device.name;
-  String get address => _device.address;
-  int get type => _device.type;
+  // String get address => _device.address;
+  // int get type => _device.type;
 }
 
 /// Printer Bluetooth Manager
 class PrinterBluetoothManager {
-  final BluetoothManager _bluetoothManager = BluetoothManager.instance;
+  final FlutterBlue _flutterBlue = FlutterBlue.instance;
   bool _isPrinting = false;
   bool _isConnected = false;
   StreamSubscription _scanResultsSubscription;
   StreamSubscription _isScanningSubscription;
   PrinterBluetooth _selectedPrinter;
+  List<BluetoothService> _bluetoothServices;
+
 
   final BehaviorSubject<bool> _isScanning = BehaviorSubject.seeded(false);
   Stream<bool> get isScanningStream => _isScanning.stream;
@@ -46,14 +48,14 @@ class PrinterBluetoothManager {
   void startScan(Duration timeout) async {
     _scanResults.add(<PrinterBluetooth>[]);
 
-    _bluetoothManager.startScan(timeout: timeout);
+    _flutterBlue.startScan(timeout: timeout);
 
-    _scanResultsSubscription = _bluetoothManager.scanResults.listen((devices) {
-      _scanResults.add(devices.map((d) => PrinterBluetooth(d)).toList());
+    _scanResultsSubscription = _flutterBlue.scanResults.listen((devices) {
+      _scanResults.add(devices.map((d) => PrinterBluetooth(d.device)).toList());
     });
 
     _isScanningSubscription =
-        _bluetoothManager.isScanning.listen((isScanningCurrent) async {
+        _flutterBlue.isScanning.listen((isScanningCurrent) async {
       // If isScanning value changed (scan just stopped)
       if (_isScanning.value && !isScanningCurrent) {
         _scanResultsSubscription.cancel();
@@ -64,7 +66,7 @@ class PrinterBluetoothManager {
   }
 
   void stopScan() async {
-    await _bluetoothManager.stopScan();
+    await _flutterBlue.stopScan();
   }
 
   void selectPrinter(PrinterBluetooth printer) {
@@ -90,44 +92,58 @@ class PrinterBluetoothManager {
     _isPrinting = true;
 
     // We have to rescan before connecting, otherwise we can connect only once
-    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
-    await _bluetoothManager.stopScan();
+    await _flutterBlue.startScan(timeout: Duration(seconds: 1));
+    await _flutterBlue.stopScan();
 
     // Connect
-    await _bluetoothManager.connect(_selectedPrinter._device);
+    await _selectedPrinter._device.connect();
 
-    // Subscribe to the events
-    _bluetoothManager.state.listen((state) async {
-      switch (state) {
-        case BluetoothManager.CONNECTED:
-          // To avoid double call
-          if (!_isConnected) {
-            final len = bytes.length;
-            List<List<int>> chunks = [];
-            for (var i = 0; i < len; i += chunkSizeBytes) {
-              var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
-              chunks.add(bytes.sublist(i, end));
-            }
+    _selectedPrinter._device.state.listen((state)async {
+      switch(state){
+        case BluetoothDeviceState.connected :
 
-            for (var i = 0; i < chunks.length; i += 1) {
-              await _bluetoothManager.writeData(chunks[i]);
-              sleep(Duration(milliseconds: queueSleepTimeMs));
-            }
-
-            completer.complete(PosPrintResult.success);
+          final len = bytes.length;
+          List<List<int>> chunks = [];
+          for (var i = 0; i < len; i += chunkSizeBytes) {
+            var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
+            chunks.add(bytes.sublist(i, end));
           }
-          // TODO sending disconnect signal should be event-based
+
+          await _selectedPrinter._device.discoverServices();
+          _selectedPrinter._device.services.listen((event) async{
+            _bluetoothServices = event;
+            for (BluetoothService bluetoothService in _bluetoothServices){
+              List<BluetoothCharacteristic> characteristics = bluetoothService.characteristics;
+              for(BluetoothCharacteristic characteristic in characteristics){
+                for (var i = 0; i < chunks.length; i += 1) {
+                  try{
+                    await characteristic.write(chunks[i], withoutResponse: true);
+                    await characteristic.read();
+                    sleep(Duration(milliseconds: queueSleepTimeMs));
+                  }catch(e){
+                    break;
+                  }
+                }
+              }
+            }
+
+          });
+
+          completer.complete(PosPrintResult.success);
+
           _runDelayed(3).then((dynamic v) async {
-            await _bluetoothManager.disconnect();
+            await _selectedPrinter._device.disconnect();
             _isPrinting = false;
           });
           _isConnected = true;
           break;
-        case BluetoothManager.DISCONNECTED:
+        case BluetoothDeviceState.disconnected :
           _isConnected = false;
+          await _selectedPrinter._device.connect();
           break;
         default:
           break;
+
       }
     });
 
