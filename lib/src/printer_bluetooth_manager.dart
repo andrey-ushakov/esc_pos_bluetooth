@@ -84,8 +84,10 @@ class PrinterBluetoothManager {
     if (_selectedPrinter == null) {
       return Future<PosPrintResult>.value(PosPrintResult.printerNotSelected);
     } else if (_isScanning.value) {
+
       return Future<PosPrintResult>.value(PosPrintResult.scanInProgress);
     } else if (_isPrinting) {
+      print(1);
       return Future<PosPrintResult>.value(PosPrintResult.printInProgress);
     }
 
@@ -133,14 +135,11 @@ class PrinterBluetoothManager {
 
           });
 
-          _runDelayed(3).then((dynamic v) async {
-            await _selectedPrinter._device.disconnect();
-            _isPrinting = false;
-          });
+          await _selectedPrinter._device.disconnect();
+          _isPrinting = false;
           _isConnected = true;
 
           completer.complete(PosPrintResult.success);
-
 
           break;
         default:
@@ -149,13 +148,6 @@ class PrinterBluetoothManager {
       }
     });
 
-    // Printing timeout
-    // _runDelayed(timeout).then((dynamic v) async {
-    //   if (_isPrinting) {
-    //     _isPrinting = false;
-    //     completer.complete(PosPrintResult.timeout);
-    //   }
-    // });
 
     return completer.future;
   }
