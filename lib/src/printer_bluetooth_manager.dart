@@ -101,11 +101,9 @@ class PrinterBluetoothManager {
     await _flutterBlue.stopScan();
 
     // Connect
-    print(_isConnected);
-    if(!_isConnected){
+    if(!_isConnected) {
       await _selectedPrinter._device.connect();
     }
-
 
     _selectedPrinter._device.state.listen((state)async {
       switch(state){
@@ -140,15 +138,15 @@ class PrinterBluetoothManager {
             });
 
             completer.complete(PosPrintResult.success);
-
+            _runDelayed(3).then((dynamic v) async {
+              //await _selectedPrinter._device.disconnect();
+              _isPrinting = false;
+            });
+            _isConnected = true;
           }
-
-          _runDelayed(3).then((dynamic v) async {
-            await _selectedPrinter._device.disconnect();
-          });
+          break;
+        case BluetoothDeviceState.disconnected :
           _isConnected = true;
-          print("==========================>" + _isPrinting.toString());
-
           break;
         default:
           break;
@@ -156,7 +154,7 @@ class PrinterBluetoothManager {
       }
     });
 
-    _isPrinting = false;
+
 
     return completer.future;
   }
