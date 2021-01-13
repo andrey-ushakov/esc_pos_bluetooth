@@ -133,17 +133,15 @@ class PrinterBluetoothManager {
 
           });
 
-          completer.complete(PosPrintResult.success);
-
           _runDelayed(3).then((dynamic v) async {
             await _selectedPrinter._device.disconnect();
             _isPrinting = false;
           });
           _isConnected = true;
-          break;
-        case BluetoothDeviceState.disconnected :
-          _isConnected = false;
-          await _selectedPrinter._device.connect();
+
+          completer.complete(PosPrintResult.success);
+
+
           break;
         default:
           break;
