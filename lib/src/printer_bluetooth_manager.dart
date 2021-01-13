@@ -19,7 +19,7 @@ class PrinterBluetooth {
   final BluetoothDevice _device;
 
   String get name => _device.name;
-  // String get address => _device.address;
+  //String get address => _device.;
   // int get type => _device.type;
 }
 
@@ -96,7 +96,10 @@ class PrinterBluetoothManager {
     await _flutterBlue.stopScan();
 
     // Connect
-    await _selectedPrinter._device.connect();
+    if(!_isConnected){
+      await _selectedPrinter._device.connect();
+    }
+
 
     _selectedPrinter._device.state.listen((state)async {
       switch(state){
