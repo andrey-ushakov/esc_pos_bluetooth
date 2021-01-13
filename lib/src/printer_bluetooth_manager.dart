@@ -82,13 +82,16 @@ class PrinterBluetoothManager {
 
     const int timeout = 5;
     if (_selectedPrinter == null) {
+      print(1);
       return Future<PosPrintResult>.value(PosPrintResult.printerNotSelected);
     } else if (_isScanning.value) {
-
+      print(2);
       return Future<PosPrintResult>.value(PosPrintResult.scanInProgress);
     } else if (_isPrinting) {
-      print(1);
+      print(3);
       return Future<PosPrintResult>.value(PosPrintResult.printInProgress);
+    } else{
+      print(4);
     }
 
     _isPrinting = true;
@@ -114,32 +117,40 @@ class PrinterBluetoothManager {
             var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
             chunks.add(bytes.sublist(i, end));
           }
-
-          await _selectedPrinter._device.discoverServices();
-          _selectedPrinter._device.services.listen((event) async{
-            _bluetoothServices = event;
-            for (BluetoothService bluetoothService in _bluetoothServices){
-              List<BluetoothCharacteristic> characteristics = bluetoothService.characteristics;
-              for(BluetoothCharacteristic characteristic in characteristics){
-                for (var i = 0; i < chunks.length; i += 1) {
-                  try{
-                    await characteristic.write(chunks[i], withoutResponse: true);
-                    await characteristic.read();
-                    sleep(Duration(milliseconds: queueSleepTimeMs));
-                  }catch(e){
-                    break;
+          if (!_isConnected) {
+            await _selectedPrinter._device.discoverServices();
+            _selectedPrinter._device.services.listen((event) async {
+              _bluetoothServices = event;
+              for (BluetoothService bluetoothService in _bluetoothServices) {
+                List<BluetoothCharacteristic> characteristics = bluetoothService
+                    .characteristics;
+                for (BluetoothCharacteristic characteristic in characteristics) {
+                  for (var i = 0; i < chunks.length; i += 1) {
+                    try {
+                      await characteristic.write(
+                          chunks[i], withoutResponse: true);
+                      await characteristic.read();
+                      sleep(Duration(milliseconds: queueSleepTimeMs));
+                    } catch (e) {
+                      break;
+                    }
                   }
                 }
               }
-            }
+            });
 
+            completer.complete(PosPrintResult.success);
+
+          }
+
+          _runDelayed(3).then((dynamic v) async {
+            await _selectedPrinter._device.disconnect();
+            _isPrinting = false;
           });
-
-          await _selectedPrinter._device.disconnect();
-          _isPrinting = false;
           _isConnected = true;
 
-          completer.complete(PosPrintResult.success);
+
+
 
           break;
         default:
