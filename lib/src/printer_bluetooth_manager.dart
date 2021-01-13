@@ -147,7 +147,7 @@ class PrinterBluetoothManager {
             await _selectedPrinter._device.disconnect();
           });
           _isConnected = true;
-          _isPrinting = false;
+          print("==========================>" + _isPrinting.toString());
 
           break;
         default:
@@ -156,6 +156,7 @@ class PrinterBluetoothManager {
       }
     });
 
+    _isPrinting = false;
 
     return completer.future;
   }
