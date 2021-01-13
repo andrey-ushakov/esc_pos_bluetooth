@@ -145,12 +145,9 @@ class PrinterBluetoothManager {
 
           _runDelayed(3).then((dynamic v) async {
             await _selectedPrinter._device.disconnect();
-            _isPrinting = false;
           });
           _isConnected = true;
-
-
-
+          _isPrinting = false;
 
           break;
         default:
