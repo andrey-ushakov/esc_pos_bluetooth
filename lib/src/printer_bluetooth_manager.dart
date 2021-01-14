@@ -95,7 +95,7 @@ class PrinterBluetoothManager {
     }
 
     _isPrinting = true;
-
+    bool isFirst = true;
     // We have to rescan before connecting, otherwise we can connect only once
     await _flutterBlue.startScan(timeout: Duration(seconds: 1));
     await _flutterBlue.stopScan();
@@ -123,14 +123,16 @@ class PrinterBluetoothManager {
                 List<BluetoothCharacteristic> characteristics = bluetoothService
                     .characteristics;
                 for (BluetoothCharacteristic characteristic in characteristics) {
-                  for (var i = 0; i < chunks.length; i += 1) {
-                    try {
-                      await characteristic.write(
-                          chunks[i], withoutResponse: true);
-                      //await characteristic.read();
-                      sleep(Duration(milliseconds: queueSleepTimeMs));
-                    } catch (e) {
-                      break;
+                  if(isFirst){
+                    for (var i = 0; i < chunks.length; i += 1) {
+                      try {
+                        await characteristic.write(
+                            chunks[i], withoutResponse: true);
+                        isFirst = false;
+                        sleep(Duration(milliseconds: queueSleepTimeMs));
+                      } catch (e) {
+                        break;
+                      }
                     }
                   }
                 }
@@ -141,10 +143,8 @@ class PrinterBluetoothManager {
             _runDelayed(3).then((dynamic v) async {
               await _selectedPrinter._device.disconnect();
               _isPrinting = false;
-              print("==============================> IS PRINTING FALSE");
             });
             _isConnected = false;
-            print("==============================> IS CONNECTED FALSE");
           }
           break;
         case BluetoothDeviceState.disconnected :
