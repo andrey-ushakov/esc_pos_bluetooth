@@ -91,7 +91,7 @@ class PrinterBluetoothManager {
       print(3);
       return Future<PosPrintResult>.value(PosPrintResult.printInProgress);
     } else{
-      print(4);
+      completer.complete(PosPrintResult.print);
     }
 
     _isPrinting = true;
@@ -141,7 +141,7 @@ class PrinterBluetoothManager {
               }
             });
 
-            completer.complete(PosPrintResult.success);
+            //completer.complete(PosPrintResult.success);
             _runDelayed(3).then((dynamic v) async {
               await _selectedPrinter._device.disconnect();
               _isPrinting = false;
