@@ -115,6 +115,7 @@ class PrinterBluetoothManager {
             var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
             chunks.add(bytes.sublist(i, end));
           }
+
           if (_isConnected) {
             await _selectedPrinter._device.discoverServices();
             _selectedPrinter._device.services.listen((event) async {
@@ -128,6 +129,7 @@ class PrinterBluetoothManager {
                       try {
                         await characteristic.write(
                             chunks[i], withoutResponse: true);
+                        await characteristic.read();
                         isFirst = false;
                         sleep(Duration(milliseconds: queueSleepTimeMs));
                       } catch (e) {
@@ -143,8 +145,10 @@ class PrinterBluetoothManager {
             _runDelayed(3).then((dynamic v) async {
               await _selectedPrinter._device.disconnect();
               _isPrinting = false;
+
             });
             _isConnected = false;
+
           }
           break;
         case BluetoothDeviceState.disconnected :
@@ -167,15 +171,15 @@ class PrinterBluetoothManager {
   }
 
   Future<PosPrintResult> printTicket(
-    Ticket ticket, {
+    List<int> bytes, {
     int chunkSizeBytes = 20,
     int queueSleepTimeMs = 20,
   }) async {
-    if (ticket == null || ticket.bytes.isEmpty) {
+    if (bytes == null || bytes.isEmpty) {
       return Future<PosPrintResult>.value(PosPrintResult.ticketEmpty);
     }
     return writeBytes(
-      ticket.bytes,
+      bytes,
       chunkSizeBytes: chunkSizeBytes,
       queueSleepTimeMs: queueSleepTimeMs,
     );
