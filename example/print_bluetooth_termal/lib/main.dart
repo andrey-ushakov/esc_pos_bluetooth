@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final Uint8List bytes = data.buffer.asUint8List();
     final Image image = decodeImage(bytes);
     // ticket.image(image);
-    ticket += generator.text(" ");
+    ticket += generator.text(" "); //=============================> !!!! IMPORTANT
 
     ticket += generator.text("TESTING PRINT",
       styles: PosStyles(
