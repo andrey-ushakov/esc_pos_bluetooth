@@ -267,6 +267,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(_devices[index].name ?? ''),
+                                Text(_devices[index].address ?? ''),
+                                Text(_devices[index].type.toString() ?? ''),
                                 Text(
                                   'Click to print a test receipt',
                                   style: TextStyle(color: Colors.grey[700]),
