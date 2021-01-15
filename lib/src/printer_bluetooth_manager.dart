@@ -97,8 +97,6 @@ class PrinterBluetoothManager {
     _isPrinting = true;
     bool isFirst = true;
     // We have to rescan before connecting, otherwise we can connect only once
-    await _flutterBlue.startScan(timeout: Duration(seconds: 1));
-    await _flutterBlue.stopScan();
 
     // Connect
     if(!_isConnected) {
