@@ -122,9 +122,7 @@ class PrinterBluetoothManager {
               for (BluetoothService bluetoothService in _bluetoothServices) {
                 List<BluetoothCharacteristic> characteristics = bluetoothService
                     .characteristics;
-                print(characteristics.length);
                 for (BluetoothCharacteristic characteristic in characteristics) {
-                  print("====>> " + characteristic.deviceId.id);
                   if(isFirst){
                     for (var i = 0; i < chunks.length; i += 1) {
                       try {
@@ -133,6 +131,7 @@ class PrinterBluetoothManager {
                         await characteristic.read();
                         isFirst = false;
                       } catch (e) {
+                        print(e.toString());
                         break;
                       }
                     }
