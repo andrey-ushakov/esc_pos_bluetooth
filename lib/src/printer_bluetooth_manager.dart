@@ -16,6 +16,13 @@ class PrinterBluetooth {
   PrinterBluetooth(this._device);
   final BluetoothDevice _device;
 
+  String _deviceName;
+
+  String get deviceName => _deviceName;
+  set deviceName(String val){
+    this._deviceName = val;
+  }
+
   String get name => _device.name;
   String get address => _device.id.id;
   int get type => _device.type.index;
