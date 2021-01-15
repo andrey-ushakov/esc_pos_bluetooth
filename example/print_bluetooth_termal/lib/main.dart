@@ -42,13 +42,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
+    printerManager.startScan(Duration(seconds: 1));
     printerManager.scanResults.listen((devices) async {
       // print('UI: Devices found ${devices.length}');
       setState(() {
         _devices = devices;
       });
     });
+    print(_devices.length);
   }
 
   void _startScanDevices() {

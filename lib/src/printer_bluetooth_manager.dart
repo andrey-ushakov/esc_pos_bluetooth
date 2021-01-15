@@ -140,7 +140,7 @@ class PrinterBluetoothManager {
             });
 
             //completer.complete(PosPrintResult.success);
-            _runDelayed(3).then((dynamic v) async {
+            _runDelayed(8).then((dynamic v) async {
               await _selectedPrinter._device.disconnect();
               _isPrinting = false;
 
