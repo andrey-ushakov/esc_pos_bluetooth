@@ -75,7 +75,7 @@ class PrinterBluetoothManager {
 
   Future<PosPrintResult> writeBytes(
     List<int> bytes, {
-    int chunkSizeBytes = 20,
+    int chunkSizeBytes = 100,
     int queueSleepTimeMs = 20,
   }) async {
     final Completer<PosPrintResult> completer = Completer();
