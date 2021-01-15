@@ -96,6 +96,7 @@ class PrinterBluetoothManager {
 
     _isPrinting = true;
     bool isFirst = true;
+    bool isFinish = true;
     // We have to rescan before connecting, otherwise we can connect only once
 
     // Connect
@@ -138,10 +139,11 @@ class PrinterBluetoothManager {
               }
             });
 
-            await _selectedPrinter._device.disconnect();
-            _isPrinting = false;
+            _runDelayed(7).then((dynamic v) async {
+              await _selectedPrinter._device.disconnect();
+              _isPrinting = false;
+            });
             _isConnected = false;
-
           }
           break;
         case BluetoothDeviceState.disconnected :
@@ -152,14 +154,6 @@ class PrinterBluetoothManager {
 
       }
     });
-
-    _runDelayed(6).then((dynamic v) async {
-      if (_isPrinting) {
-        _isPrinting = false;
-        completer.complete(PosPrintResult.timeout);
-      }
-    });
-
     return completer.future;
   }
 
