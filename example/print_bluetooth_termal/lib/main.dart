@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
         )
     );
 
-    
+
     ticket += generator.cut();
     return ticket;
   }
