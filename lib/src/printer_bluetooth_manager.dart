@@ -129,7 +129,6 @@ class PrinterBluetoothManager {
                             chunks[i], withoutResponse: true);
                         await characteristic.read();
                         isFirst = false;
-                        //sleep(Duration(milliseconds: queueSleepTimeMs));
                       } catch (e) {
                         break;
                       }
@@ -140,7 +139,7 @@ class PrinterBluetoothManager {
             });
 
             //completer.complete(PosPrintResult.success);
-            _runDelayed(7).then((dynamic v) async {
+            _runDelayed(5).then((dynamic v) async {
               await _selectedPrinter._device.disconnect();
               _isPrinting = false;
 
@@ -158,7 +157,7 @@ class PrinterBluetoothManager {
       }
     });
 
-    _runDelayed(8).then((dynamic v) async {
+    _runDelayed(6).then((dynamic v) async {
       if (_isPrinting) {
         _isPrinting = false;
         completer.complete(PosPrintResult.timeout);
