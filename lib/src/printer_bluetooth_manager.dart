@@ -7,8 +7,6 @@
  */
 
 import 'dart:async';
-import 'dart:io';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:rxdart/rxdart.dart';
 import './enums.dart';
@@ -126,8 +124,7 @@ class PrinterBluetoothManager {
                   if(isFirst){
                     for (var i = 0; i < chunks.length; i += 1) {
                       try {
-                        await characteristic.write(
-                            chunks[i], withoutResponse: true);
+                        await characteristic.write(chunks[i], withoutResponse: true);
                         await characteristic.read();
                         isFirst = false;
                       } catch (e) {
