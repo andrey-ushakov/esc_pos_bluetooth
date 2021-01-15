@@ -128,7 +128,6 @@ class PrinterBluetoothManager {
                         await characteristic.read();
                         isFirst = false;
                       } catch (e) {
-                        print(e.toString());
                         break;
                       }
                     }
