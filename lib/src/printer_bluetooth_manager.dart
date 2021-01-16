@@ -85,7 +85,7 @@ class PrinterBluetoothManager {
 
   Future<PosPrintResult> writeBytes(
     List<int> bytes, {
-    int chunkSizeBytes = 100,
+    int chunkSizeBytes = 20,
     int queueSleepTimeMs = 20,
   }) async {
     final Completer<PosPrintResult> completer = Completer();
@@ -114,7 +114,6 @@ class PrinterBluetoothManager {
       await _selectedPrinter._device.connect();
       _isConnected = true;
     }
-
     _selectedPrinter._device.state.listen((state)async {
       switch(state){
         case BluetoothDeviceState.connected :
