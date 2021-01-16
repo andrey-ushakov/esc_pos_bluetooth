@@ -33,11 +33,11 @@ class PrinterBluetoothManager {
   final FlutterBlue _flutterBlue = FlutterBlue.instance;
   bool _isPrinting = false;
   bool _isConnected = false;
+
   StreamSubscription _scanResultsSubscription;
   StreamSubscription _isScanningSubscription;
   PrinterBluetooth _selectedPrinter;
   List<BluetoothService> _bluetoothServices;
-
 
   final BehaviorSubject<bool> _isScanning = BehaviorSubject.seeded(false);
   Stream<bool> get isScanningStream => _isScanning.stream;
@@ -78,6 +78,11 @@ class PrinterBluetoothManager {
     _selectedPrinter = printer;
   }
 
+  Future<void> disconnect() async{
+    await _selectedPrinter._device.disconnect();
+    _isPrinting = false;
+  }
+
   Future<PosPrintResult> writeBytes(
     List<int> bytes, {
     int chunkSizeBytes = 100,
@@ -101,7 +106,7 @@ class PrinterBluetoothManager {
 
     _isPrinting = true;
     bool isFirst = true;
-    bool isFinish = true;
+    bool _isFinish = false;
     // We have to rescan before connecting, otherwise we can connect only once
 
     // Connect
@@ -125,6 +130,7 @@ class PrinterBluetoothManager {
             _selectedPrinter._device.services.listen((event) async {
               _bluetoothServices = event;
               for (BluetoothService bluetoothService in _bluetoothServices) {
+
                 List<BluetoothCharacteristic> characteristics = bluetoothService
                     .characteristics;
                 for (BluetoothCharacteristic characteristic in characteristics) {
@@ -134,20 +140,21 @@ class PrinterBluetoothManager {
                         await characteristic.write(chunks[i], withoutResponse: true);
                         await characteristic.read();
                         isFirst = false;
+                        _isFinish = true;
+
                       } catch (e) {
                         break;
                       }
+                    }
+                    if(_isFinish){
+                      _isPrinting = false;
+                      _isConnected = false;
+                      await _selectedPrinter._device.disconnect();
                     }
                   }
                 }
               }
             });
-
-            _runDelayed(10).then((dynamic v) async {
-              await _selectedPrinter._device.disconnect();
-              _isPrinting = false;
-            });
-            _isConnected = false;
           }
           break;
         case BluetoothDeviceState.disconnected :
