@@ -139,7 +139,6 @@ class PrinterBluetoothManager {
                       try {
                         await characteristic.write(chunks[i], withoutResponse: true);
                         await characteristic.read();
-                        sleep(Duration(milliseconds: queueSleepTimeMs));
                         isFirst = false;
                         _isFinish = true;
                       } catch (e) {
