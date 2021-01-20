@@ -138,6 +138,172 @@ class _MyHomePageState extends State<MyHomePage> {
           text: '2.55 ', width: 2, styles: PosStyles(align: PosAlign.right)),
     ]);
 
+    ticket += generator.row([
+      PosColumn(text: 'Qty ', width: 1),
+      PosColumn(text: 'Item ', width: 7),
+      PosColumn(
+          text: 'Price ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: 'Total ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+
+    ticket += generator.row([
+      PosColumn(text: '2', width: 1),
+      PosColumn(text: 'ONION RINGS ', width: 7),
+      PosColumn(
+          text: '0.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '1.98 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'PIZZA ', width: 7),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'SPRING ROLLS ', width: 7),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '3', width: 1),
+      PosColumn(text: 'CRUNCHY STICKS ', width: 7),
+      PosColumn(
+          text: '0.85 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.55 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+
+    ticket += generator.row([
+      PosColumn(text: 'Qty ', width: 1),
+      PosColumn(text: 'Item ', width: 7),
+      PosColumn(
+          text: 'Price ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: 'Total ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+
+    ticket += generator.row([
+      PosColumn(text: '2', width: 1),
+      PosColumn(text: 'ONION RINGS ', width: 7),
+      PosColumn(
+          text: '0.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '1.98 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'PIZZA ', width: 7),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'SPRING ROLLS ', width: 7),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '3', width: 1),
+      PosColumn(text: 'CRUNCHY STICKS ', width: 7),
+      PosColumn(
+          text: '0.85 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.55 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: 'Qty ', width: 1),
+      PosColumn(text: 'Item ', width: 7),
+      PosColumn(
+          text: 'Price ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: 'Total ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+
+    ticket += generator.row([
+      PosColumn(text: '2', width: 1),
+      PosColumn(text: 'ONION RINGS ', width: 7),
+      PosColumn(
+          text: '0.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '1.98 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'PIZZA ', width: 7),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'SPRING ROLLS ', width: 7),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '3', width: 1),
+      PosColumn(text: 'CRUNCHY STICKS ', width: 7),
+      PosColumn(
+          text: '0.85 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.55 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: 'Qty ', width: 1),
+      PosColumn(text: 'Item ', width: 7),
+      PosColumn(
+          text: 'Price ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: 'Total ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+
+    ticket += generator.row([
+      PosColumn(text: '2', width: 1),
+      PosColumn(text: 'ONION RINGS ', width: 7),
+      PosColumn(
+          text: '0.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '1.98 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'PIZZA ', width: 7),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '3.45 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '1', width: 1),
+      PosColumn(text: 'SPRING ROLLS ', width: 7),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.99 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    ticket += generator.row([
+      PosColumn(text: '3', width: 1),
+      PosColumn(text: 'CRUNCHY STICKS ', width: 7),
+      PosColumn(
+          text: '0.85 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(
+          text: '2.55 ', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+
     ticket += generator.hr(ch: '-', linesAfter: 1);
 
     ticket += generator.row([

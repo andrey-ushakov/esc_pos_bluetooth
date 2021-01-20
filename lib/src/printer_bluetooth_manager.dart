@@ -7,6 +7,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:rxdart/rxdart.dart';
@@ -115,6 +116,42 @@ class PrinterBluetoothManager {
       await _selectedPrinter._device.connect();
       _isConnected = true;
     }
+    final len = bytes.length;
+    List<List<int>> chunks = [];
+    for (var i = 0; i < len; i += chunkSizeBytes) {
+      var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
+      chunks.add(bytes.sublist(i, end));
+    }
+
+    if (_isConnected) {
+      List<BluetoothService> services = await _selectedPrinter._device
+          .discoverServices();
+      for (BluetoothService service in services) {
+        List<BluetoothCharacteristic> characteristics = service.characteristics;
+        for (BluetoothCharacteristic characteristic in characteristics) {
+          if (isFirst) {
+            for (var i = 0; i < chunks.length; i += 1) {
+              try {
+                await characteristic.write(chunks[i], withoutResponse: true);
+                await characteristic.read();
+                isFirst = false;
+                _isFinish = true;
+              } catch (e) {
+                break;
+              }
+            }
+            if (_isFinish) {
+              _isPrinting = false;
+              _isConnected = false;
+              await _selectedPrinter._device.disconnect();
+            }
+          }
+        }
+      }
+    }
+
+
+    /*
     _selectedPrinter._device.state.listen((state)async {
       switch(state){
         case BluetoothDeviceState.connected :
@@ -126,7 +163,32 @@ class PrinterBluetoothManager {
           }
 
           if (_isConnected) {
-            await _selectedPrinter._device.discoverServices();
+            List<BluetoothService> services = await _selectedPrinter._device.discoverServices();
+            for(BluetoothService service in services){
+              List<BluetoothCharacteristic> characteristics = service.characteristics;
+              for(BluetoothCharacteristic characteristic in characteristics){
+                if(isFirst){
+                  for (var i = 0; i < chunks.length; i += 1) {
+                    try {
+                      await characteristic.write(chunks[i], withoutResponse: true);
+                      await characteristic.read();
+                      isFirst = false;
+                      _isFinish = true;
+                    } catch (e) {
+                      break;
+                    }
+                  }
+                  if(_isFinish){
+                    _isPrinting = false;
+                    _isConnected = false;
+                    await _selectedPrinter._device.disconnect();
+                  }
+                }
+              }
+
+            }
+
+            /*
             _selectedPrinter._device.services.listen((event) async {
               _bluetoothServices = event;
               for (BluetoothService bluetoothService in _bluetoothServices) {
@@ -154,7 +216,10 @@ class PrinterBluetoothManager {
                 }
               }
             });
+
+             */
           }
+
           break;
         case BluetoothDeviceState.disconnected :
           _isConnected = false;
@@ -164,6 +229,8 @@ class PrinterBluetoothManager {
 
       }
     });
+
+     */
     return completer.future;
   }
 
