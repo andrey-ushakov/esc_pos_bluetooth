@@ -10,7 +10,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:esc_pos_utils/esc_pos_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -108,9 +107,8 @@ class PrinterBluetoothManager {
     } else if (_isPrinting) {
       return Future<PosPrintResult>.value(PosPrintResult.printInProgress);
     }
-
     // We have to rescan before connecting, otherwise we can connect only once
-    await _bluetoothManager.startScan(timeout: Duration(seconds: _timeOut));
+    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
     await _bluetoothManager.stopScan();
 
     // Connect
@@ -121,9 +119,9 @@ class PrinterBluetoothManager {
       if (_isPrinting) {
         _isPrinting = false;
         completer.complete(PosPrintResult.timeout);
+        await _bluetoothManager.disconnect();
       }
       completer.complete(PosPrintResult.success);
-      // await _bluetoothManager.disconnect();
     });
 
     return completer.future;
@@ -138,7 +136,7 @@ class PrinterBluetoothManager {
     if (ticket == null || ticket.bytes.isEmpty) {
       return Future<PosPrintResult>.value(PosPrintResult.ticketEmpty);
     }
-
+    _bufferedBytes = [];
     _bufferedBytes = ticket.bytes;
     _queueSleepTimeMs = queueSleepTimeMs;
     _chunkSizeBytes = chunkSizeBytes;
@@ -183,8 +181,10 @@ class PrinterBluetoothManager {
     }
     _isPrinting = false;
     _bufferedBytes = [];
-    _runDelayed(_timeOut).then((dynamic v) async {
-      await _bluetoothManager.disconnect();
-    });
+    if (_isConnected) {
+      _runDelayed(3).then((dynamic v) async {
+        await _bluetoothManager.disconnect();
+      });
+    }
   }
 }
