@@ -96,12 +96,37 @@ class PrinterBluetoothManager {
     });
   }
 
+  Future<PosPrintResult> _checkConnectionState() async {
+    Timer _stateTimer;
+    int _start = 10;
+    final Completer<PosPrintResult> completer = Completer();
+    const oneSec = Duration(seconds: 1);
+    _stateTimer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0 || _isConnected) {
+          timer.cancel();
+          print('ENDTIME');
+          print(_isConnected);
+          if (_isConnected) {
+            _stateTimer?.cancel();
+            completer.complete(PosPrintResult.success);
+          } else {
+            _stateTimer?.cancel();
+            completer.complete(PosPrintResult.timeout);
+          }
+        } else {
+          _start--;
+        }
+      },
+    );
+    return completer.future;
+  }
+
   Future<PosPrintResult> _connectBluetooth(
     List<int> bytes, {
     int timeout = 5,
   }) async {
-    final Completer<PosPrintResult> completer = Completer();
-    await Future<dynamic>.delayed(Duration(milliseconds: 500));
     if (_selectedPrinter == null) {
       return Future<PosPrintResult>.value(PosPrintResult.printerNotSelected);
     } else if (_isScanning.value) {
@@ -115,8 +140,8 @@ class PrinterBluetoothManager {
 
     // Connect
     await _bluetoothManager.connect(_selectedPrinter._device);
-
-    return Future<PosPrintResult>.value(PosPrintResult.success);
+    final result = await _checkConnectionState();
+    return result;
   }
 
   Future<PosPrintResult> _writeRequest(timeout) async {
@@ -150,17 +175,21 @@ class PrinterBluetoothManager {
     _queueSleepTimeMs = queueSleepTimeMs;
     _chunkSizeBytes = chunkSizeBytes;
     _timeOut = timeout;
+
     if (!_isConnected) {
       final result = await _connectBluetooth(
         ticket.bytes,
         timeout: timeout,
       );
-
       if (result.msg != 'Success') {
         return result;
       }
     }
-    return await _writeRequest(timeout);
+    if (_isConnected) {
+      return await _writeRequest(timeout);
+    } else {
+      return Future<PosPrintResult>.value(PosPrintResult.timeout);
+    }
   }
 
   Future<PosPrintResult> printLabel(
@@ -186,7 +215,12 @@ class PrinterBluetoothManager {
         return result;
       }
     }
-    return await _writeRequest(timeout);
+
+    if (_isConnected) {
+      return await _writeRequest(timeout);
+    } else {
+      return Future<PosPrintResult>.value(PosPrintResult.timeout);
+    }
   }
 
   disconnect(timeout) {
