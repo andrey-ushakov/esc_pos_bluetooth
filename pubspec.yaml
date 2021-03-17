@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   rxdart: ^0.26.0
-  esc_pos-utils: 
+  esc_pos_utils: 
     git:
       url: https://github.com/teewhydope/esc_pos_utils.git
   # esc_pos_utils:
