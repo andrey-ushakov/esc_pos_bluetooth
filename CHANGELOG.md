@@ -1,6 +1,3 @@
-## [0.2.8]
-* Bump esc_pos_utils
-
 ## [0.2.7]
 * Updated flutter_bluetooth_basic
 
