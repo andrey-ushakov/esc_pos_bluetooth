@@ -1,0 +1,32 @@
+name: blue
+description: A new Flutter project.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.3
+  oktoast: ^3.0.0
+  image: ^3.0.2
+  esc_pos_bluetooth:
+    path: ../../
+  charset_converter: ^2.0.0
+  intl: ^0.17.0
+  qr_flutter: ^4.0.0
+  path_provider: ^2.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.png
+    - assets/logo216.png
+    - assets/logo222.png
+    - assets/rabbit_black.jpg
