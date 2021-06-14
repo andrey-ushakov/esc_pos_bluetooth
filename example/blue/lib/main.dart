@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, @required this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Print image
     final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
     final Uint8List imageBytes = data.buffer.asUint8List();
-    final Image image = decodeImage(imageBytes);
+    final Image? image = decodeImage(imageBytes);
     // bytes += ticket.image(image);
 
     bytes += ticket.text('GROCERYLY',
@@ -264,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Print image
     final ByteData data = await rootBundle.load('assets/logo.png');
     final Uint8List nBytes = data.buffer.asUint8List();
-    final Image image = decodeImage(nBytes);
+    final Image image = decodeImage(nBytes)!;
     bytes += generator.image(image);
     // Print image using alternative commands
     // bytes += ticket.imageRaster(image);
@@ -334,7 +334,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(_devices[index].name ?? ''),
+                              Text(_devices[index].name),
                               Text(_devices[index].address),
                               Text(
                                 'Click to print a test receipt',

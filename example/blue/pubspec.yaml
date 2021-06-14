@@ -4,7 +4,7 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -13,7 +13,8 @@ dependencies:
   oktoast: ^3.0.0
   image: ^3.0.2
   esc_pos_bluetooth:
-    path: ../../
+    git:
+      url: https://github.com/RangerOfGondor/esc_pos_bluetooth
   charset_converter: ^2.0.0
   intl: ^0.17.0
   qr_flutter: ^4.0.0
