@@ -74,11 +74,9 @@ packages:
   esc_pos_bluetooth:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "8ac8499c705622c3fcef17e768ed18255c149eae"
-      url: "https://github.com/RangerOfGondor/esc_pos_bluetooth"
-    source: git
+      path: "../.."
+      relative: true
+    source: path
     version: "0.2.7"
   esc_pos_utils:
     dependency: transitive
