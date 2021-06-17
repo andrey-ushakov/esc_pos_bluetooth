@@ -17,6 +17,7 @@ dependencies:
       url: https://github.com/RangerOfGondor/esc_pos_utils.git
       
   flutter_bluetooth_basic: 
+    # path: ../flutter_bluetooth_basic
     git:
       url: https://github.com/RangerOfGondor/flutter_bluetooth_basic.git
 

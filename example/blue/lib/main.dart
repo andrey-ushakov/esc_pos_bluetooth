@@ -1,8 +1,7 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:qr_flutter/qr_flutter.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
@@ -44,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     printerManager.scanResults.listen((devices) async {
-      // print('UI: Devices found ${devices.length}');
+      print('UI: Devices found ${devices.length}');
       setState(() {
         _devices = devices;
       });
@@ -68,9 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
     List<int> bytes = [];
 
     // Print image
-    final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
-    final Uint8List imageBytes = data.buffer.asUint8List();
-    final Image? image = decodeImage(imageBytes);
+    // final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
+    // final Uint8List imageBytes = data.buffer.asUint8List();
+    // final Image? image = decodeImage(imageBytes);
     // bytes += ticket.image(image);
 
     bytes += ticket.text('GROCERYLY',
