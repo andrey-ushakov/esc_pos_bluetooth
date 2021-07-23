@@ -168,7 +168,7 @@ class PrinterBluetoothManager {
     _connectionTimeOut = connectionTimeOut;
     await stopScan();
     final result = await connect(bytes, timeout);
-    if (result == "Success") {
+    if (result.msg == "Success") {
       return await _writeRequest(timeout);
     } else {
       return result;
