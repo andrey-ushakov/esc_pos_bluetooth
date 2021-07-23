@@ -144,12 +144,15 @@ class PrinterBluetoothManager {
     _queueSleepTimeMs = queueSleepTimeMs;
     _chunkSizeBytes = chunkSizeBytes;
     _connectionTimeOut = connectionTimeOut;
-    await stopScan();
-    final result = await connect(ticket.bytes, timeout);
-    if (result.msg == "Success") {
+    if (_isConnected) {
       return await _writeRequest(timeout);
     } else {
-      return result;
+      final result = await connect(ticket.bytes, timeout);
+      if (result.msg == "Success") {
+        return await _writeRequest(timeout);
+      } else {
+        return result;
+      }
     }
   }
 
@@ -166,12 +169,15 @@ class PrinterBluetoothManager {
     _queueSleepTimeMs = queueSleepTimeMs;
     _chunkSizeBytes = chunkSizeBytes;
     _connectionTimeOut = connectionTimeOut;
-    await stopScan();
-    final result = await connect(bytes, timeout);
-    if (result.msg == "Success") {
+    if (_isConnected) {
       return await _writeRequest(timeout);
     } else {
-      return result;
+      final result = await connect(bytes, timeout);
+      if (result.msg == "Success") {
+        return await _writeRequest(timeout);
+      } else {
+        return result;
+      }
     }
   }
 
