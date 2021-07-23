@@ -45,7 +45,7 @@ class PrinterBluetoothManager {
   List<int> _bufferedBytes = [];
   int _queueSleepTimeMs = 20;
   int _chunkSizeBytes = 20;
-  int _connectionTimeOut = 5;
+  int _connectionTimeOut = 10;
 
   Future _runDelayed(int seconds) {
     return Future<dynamic>.delayed(Duration(seconds: seconds));
@@ -109,8 +109,8 @@ class PrinterBluetoothManager {
       return Future<PosPrintResult>.value(PosPrintResult.printInProgress);
     }
     // We have to rescan before connecting, otherwise we can connect only once
-    await startScan(Duration(seconds: 1));
-    await stopScan();
+    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
+    await _bluetoothManager.stopScan();
     // Connect
     await _bluetoothManager.connect(_selectedPrinter._device);
     final result = await _checkConnectionState();
@@ -224,8 +224,6 @@ class PrinterBluetoothManager {
       print('PENDING DISCONNECTED');
       await Future.delayed(Duration(seconds: timeout));
       await _bluetoothManager.disconnect();
-      await _bluetoothManager.destroy();
-      await _isScanningSubscription?.cancel();
       Timer _stateTimer;
       int _start = _connectionTimeOut;
       const oneSec = Duration(seconds: 1);
