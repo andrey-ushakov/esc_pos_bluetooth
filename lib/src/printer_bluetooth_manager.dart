@@ -166,12 +166,12 @@ class PrinterBluetoothManager {
     _queueSleepTimeMs = queueSleepTimeMs;
     _chunkSizeBytes = chunkSizeBytes;
     _connectionTimeOut = connectionTimeOut;
-
+    await stopScan();
     final result = await connect(bytes, timeout);
     if (result == "Success") {
       return await _writeRequest(timeout);
     } else {
-      return Future<PosPrintResult>.value(PosPrintResult.timeout);
+      return result;
     }
   }
 
