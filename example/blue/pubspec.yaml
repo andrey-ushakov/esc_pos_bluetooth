@@ -3,7 +3,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -15,7 +15,7 @@ dependencies:
     path: ../../
   esc_pos_utils: ^0.3.6
   # esc_pos_utils:
-    # path: ../../../esc_pos_utils
+  # path: ../../../esc_pos_utils
   charset_converter: ^1.0.3
   intl: ^0.16.1
   qr_flutter: ^3.2.0

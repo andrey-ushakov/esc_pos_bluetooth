@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Print image
     final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
     final Uint8List bytes = data.buffer.asUint8List();
-    final Image image = decodeImage(bytes);
+    final Image? image = decodeImage(bytes);
     // ticket.image(image);
 
     ticket.text('GROCERYLY',
@@ -254,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Print image
     final ByteData data = await rootBundle.load('assets/logo.png');
     final Uint8List bytes = data.buffer.asUint8List();
-    final Image image = decodeImage(bytes);
+    final Image image = decodeImage(bytes)!;
     ticket.image(image);
     // Print image using alternative commands
     // ticket.imageRaster(image);
@@ -321,7 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(_devices[index].name ?? ''),
-                              Text(_devices[index].address),
+                              Text(_devices[index].address!),
                               Text(
                                 'Click to print a test receipt',
                                 style: TextStyle(color: Colors.grey[700]),
@@ -341,7 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
         stream: printerManager.isScanningStream,
         initialData: false,
         builder: (c, snapshot) {
-          if (snapshot.data) {
+          if (snapshot.data!) {
             return FloatingActionButton(
               child: Icon(Icons.stop),
               onPressed: _stopScanDevices,
