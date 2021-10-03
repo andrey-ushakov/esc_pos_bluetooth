@@ -8,10 +8,9 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart';
-import './enums.dart';
+import './pos_print_result.dart';
 
 /// Bluetooth printer
 class PrinterBluetooth {
