@@ -8,18 +8,23 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
-import 'package:rxdart/rxdart.dart';
+
+import 'package:esc_pos_bluetooth/src/enums.dart';
 import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart';
-import './enums.dart';
+import 'package:rxdart/rxdart.dart';
+
+import 'package:esc_pos_utils/esc_pos_utils.dart';
 
 /// Bluetooth printer
 class PrinterBluetooth {
   PrinterBluetooth(this._device);
+
   final BluetoothDevice _device;
 
   String? get name => _device.name;
+
   String? get address => _device.address;
+
   int? get type => _device.type;
 }
 
@@ -33,10 +38,12 @@ class PrinterBluetoothManager {
   PrinterBluetooth? _selectedPrinter;
 
   final BehaviorSubject<bool> _isScanning = BehaviorSubject.seeded(false);
+
   Stream<bool> get isScanningStream => _isScanning.stream;
 
   final BehaviorSubject<List<PrinterBluetooth>> _scanResults =
       BehaviorSubject.seeded([]);
+
   Stream<List<PrinterBluetooth>> get scanResults => _scanResults.stream;
 
   Future _runDelayed(int seconds) {
@@ -76,9 +83,9 @@ class PrinterBluetoothManager {
     int chunkSizeBytes = 20,
     int queueSleepTimeMs = 20,
   }) async {
-    final Completer<PosPrintResult> completer = Completer();
+    final completer = Completer<PosPrintResult>();
 
-    const int timeout = 5;
+    const timeout = 5;
     if (_selectedPrinter == null) {
       return Future<PosPrintResult>.value(PosPrintResult.printerNotSelected);
     } else if (_isScanning.value!) {
@@ -90,7 +97,7 @@ class PrinterBluetoothManager {
     _isPrinting = true;
 
     // We have to rescan before connecting, otherwise we can connect only once
-    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
+    await _bluetoothManager.startScan(timeout: const Duration(seconds: 1));
     await _bluetoothManager.stopScan();
 
     // Connect
@@ -103,7 +110,7 @@ class PrinterBluetoothManager {
           // To avoid double call
           if (!_isConnected) {
             final len = bytes.length;
-            List<List<int>> chunks = [];
+            var chunks = <List<int>>[];
             for (var i = 0; i < len; i += chunkSizeBytes) {
               var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
               chunks.add(bytes.sublist(i, end));
