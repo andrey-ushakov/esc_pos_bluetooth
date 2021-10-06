@@ -1,3 +1,7 @@
+## [0.4.1]
+
+- Bump flutter_bluetooth_basic to ^0.1.7
+
 ## [0.4.0]
 
 - Bump esc_pos_utils to ^1.1.0. Using Generator instead of Ticket
