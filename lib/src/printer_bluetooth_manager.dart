@@ -133,9 +133,13 @@ class PrinterBluetoothManager {
 
     // Printing timeout
     _runDelayed(timeout).then((dynamic v) async {
-      if (_isPrinting) {
-        _isPrinting = false;
-        completer.complete(PosPrintResult.timeout);
+      try {
+        if (_isPrinting) {
+          _isPrinting = false;
+          completer.complete(PosPrintResult.timeout);
+        }
+      } catch (e, stacktrace) {
+        print('$e, ${[stacktrace]}');
       }
     });
 
