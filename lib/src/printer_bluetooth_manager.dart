@@ -71,6 +71,64 @@ class PrinterBluetoothManager {
     _selectedPrinter = printer;
   }
 
+  Future<PosPrintResult> writeBytesNew(List<int> bytes,
+      {int chunkSizeBytes = 20,
+      int queueSleepTimeMs = 20,
+      Duration timeout = const Duration(seconds: 5)}) async {
+    if (_selectedPrinter == null) {
+      return PosPrintResult.printerNotSelected;
+    } else if (_isScanning.value!) {
+      return PosPrintResult.scanInProgress;
+    } else if (_isPrinting) {
+      return PosPrintResult.printInProgress;
+    }
+
+    // We have to rescan before connecting, otherwise we can connect only once
+    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
+    await _bluetoothManager.stopScan();
+
+    // Connect
+    await _bluetoothManager.connect(_selectedPrinter!._device);
+
+    if (await _bluetoothManager.state
+            .firstWhere((element) => element == BluetoothManager.CONNECTED)
+            .timeout(timeout, onTimeout: () {
+          return BluetoothManager.DISCONNECTED;
+        }) !=
+        BluetoothManager.CONNECTED) {
+      _isConnected = false;
+      return PosPrintResult.timeout;
+    }
+    _isConnected = true;
+
+    final len = bytes.length;
+    List<List<int>> chunks = [];
+    for (var i = 0; i < len; i += chunkSizeBytes) {
+      var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
+      chunks.add(bytes.sublist(i, end));
+    }
+
+    List<Future> futures = <Future>[];
+
+    _isPrinting = true;
+
+    for (var i = 0; i < chunks.length; i += 1) {
+      futures.add(_bluetoothManager.writeData(chunks[i]));
+      sleep(Duration(milliseconds: queueSleepTimeMs));
+    }
+
+    return Future.wait(futures).then((_) {
+      _isPrinting = false;
+      return PosPrintResult.success;
+    }).catchError((e) {
+      _isPrinting = false;
+      return PosPrintResult.error;
+    }).timeout(timeout, onTimeout: () {
+      _isPrinting = false;
+      return PosPrintResult.timeout;
+    });
+  }
+
   Future<PosPrintResult> writeBytes(
     List<int> bytes, {
     int chunkSizeBytes = 20,
