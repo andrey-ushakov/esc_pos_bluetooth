@@ -71,7 +71,7 @@ class PrinterBluetoothManager {
     _selectedPrinter = printer;
   }
 
-  Future<PosPrintResult> writeBytesNew(List<int> bytes,
+  Future<PosPrintResult> writeBytes(List<int> bytes,
       {int chunkSizeBytes = 20,
       int queueSleepTimeMs = 20,
       Duration timeout = const Duration(seconds: 5)}) async {
@@ -129,81 +129,6 @@ class PrinterBluetoothManager {
     });
   }
 
-  Future<PosPrintResult> writeBytes(
-    List<int> bytes, {
-    int chunkSizeBytes = 20,
-    int queueSleepTimeMs = 20,
-  }) async {
-    final Completer<PosPrintResult> completer = Completer();
-
-    const int timeout = 5;
-    if (_selectedPrinter == null) {
-      return Future<PosPrintResult>.value(PosPrintResult.printerNotSelected);
-    } else if (_isScanning.value!) {
-      return Future<PosPrintResult>.value(PosPrintResult.scanInProgress);
-    } else if (_isPrinting) {
-      return Future<PosPrintResult>.value(PosPrintResult.printInProgress);
-    }
-
-    _isPrinting = true;
-
-    // We have to rescan before connecting, otherwise we can connect only once
-    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
-    await _bluetoothManager.stopScan();
-
-    // Connect
-    await _bluetoothManager.connect(_selectedPrinter!._device);
-
-    // Subscribe to the events
-    _bluetoothManager.state.listen((state) async {
-      switch (state) {
-        case BluetoothManager.CONNECTED:
-          // To avoid double call
-          if (!_isConnected) {
-            final len = bytes.length;
-            List<List<int>> chunks = [];
-            for (var i = 0; i < len; i += chunkSizeBytes) {
-              var end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
-              chunks.add(bytes.sublist(i, end));
-            }
-
-            for (var i = 0; i < chunks.length; i += 1) {
-              await _bluetoothManager.writeData(chunks[i]);
-              sleep(Duration(milliseconds: queueSleepTimeMs));
-            }
-
-            completer.complete(PosPrintResult.success);
-          }
-          // TODO sending disconnect signal should be event-based
-          _runDelayed(3).then((dynamic v) async {
-            await _bluetoothManager.disconnect();
-            _isPrinting = false;
-          });
-          _isConnected = true;
-          break;
-        case BluetoothManager.DISCONNECTED:
-          _isConnected = false;
-          break;
-        default:
-          break;
-      }
-    });
-
-    // Printing timeout
-    _runDelayed(timeout).then((dynamic v) async {
-      try {
-        if (_isPrinting) {
-          _isPrinting = false;
-          completer.complete(PosPrintResult.timeout);
-        }
-      } catch (e, stacktrace) {
-        print('$e, ${[stacktrace]}');
-      }
-    });
-
-    return completer.future;
-  }
-
   Future<PosPrintResult> printTicket(
     List<int> bytes, {
     int chunkSizeBytes = 20,
@@ -212,7 +137,7 @@ class PrinterBluetoothManager {
     if (bytes.isEmpty) {
       return Future<PosPrintResult>.value(PosPrintResult.ticketEmpty);
     }
-    return writeBytesNew(
+    return writeBytes(
       bytes,
       chunkSizeBytes: chunkSizeBytes,
       queueSleepTimeMs: queueSleepTimeMs,
