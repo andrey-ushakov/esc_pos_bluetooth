@@ -63,7 +63,7 @@ class PrinterBluetoothManager {
     });
   }
 
-  void stopScan() async {
+  Future<void> stopScan() async {
     await _bluetoothManager.stopScan();
   }
 
