@@ -117,16 +117,27 @@ class PrinterBluetoothManager {
       sleep(Duration(milliseconds: queueSleepTimeMs));
     }
 
-    return Future.wait(futures).then((_) {
+    return Future.wait(futures).then((_) async {
       _isPrinting = false;
+      _isConnected = false;
+      await _bluetoothManager.disconnect();
       return PosPrintResult.success;
-    }).catchError((e) {
+    }).catchError((e) async {
       _isPrinting = false;
+      _isConnected = false;
+      await _bluetoothManager.disconnect();
       return PosPrintResult.error;
-    }).timeout(timeout, onTimeout: () {
+    }).timeout(timeout, onTimeout: () async {
       _isPrinting = false;
+      _isConnected = false;
+      await _bluetoothManager.disconnect();
       return PosPrintResult.timeout;
     });
+  }
+
+  Future<void> disconnect() async {
+    await _bluetoothManager.disconnect();
+    _isConnected = false;
   }
 
   Future<PosPrintResult> printTicket(
