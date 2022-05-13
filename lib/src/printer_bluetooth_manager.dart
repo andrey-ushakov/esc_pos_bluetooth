@@ -83,23 +83,25 @@ class PrinterBluetoothManager {
       return PosPrintResult.printInProgress;
     }
 
-    // We have to rescan before connecting, otherwise we can connect only once
-    await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
-    await _bluetoothManager.stopScan();
+    if (!_isConnected) {
+      // We have to rescan before connecting, otherwise we can connect only once
+      await _bluetoothManager.startScan(timeout: Duration(seconds: 1));
+      await _bluetoothManager.stopScan();
 
-    // Connect
-    await _bluetoothManager.connect(_selectedPrinter!._device);
+      // Connect
+      await _bluetoothManager.connect(_selectedPrinter!._device);
 
-    if (await _bluetoothManager.state
-            .firstWhere((element) => element == BluetoothManager.CONNECTED)
-            .timeout(timeout, onTimeout: () {
-          return BluetoothManager.DISCONNECTED;
-        }) !=
-        BluetoothManager.CONNECTED) {
-      _isConnected = false;
-      return PosPrintResult.timeout;
+      if (await _bluetoothManager.state
+              .firstWhere((element) => element == BluetoothManager.CONNECTED)
+              .timeout(timeout, onTimeout: () {
+            return BluetoothManager.DISCONNECTED;
+          }) !=
+          BluetoothManager.CONNECTED) {
+        _isConnected = false;
+        return PosPrintResult.timeout;
+      }
+      _isConnected = true;
     }
-    _isConnected = true;
 
     final len = bytes.length;
     List<List<int>> chunks = [];
@@ -117,10 +119,10 @@ class PrinterBluetoothManager {
       sleep(Duration(milliseconds: queueSleepTimeMs));
     }
 
+    await Future.delayed(timeout);
+
     return Future.wait(futures).then((_) async {
       _isPrinting = false;
-      _isConnected = false;
-      await _bluetoothManager.disconnect();
       return PosPrintResult.success;
     }).catchError((e) async {
       _isPrinting = false;
