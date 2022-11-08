@@ -15,3 +15,4 @@ Thank you for your contribution!
 |POS-5802DD (Kkmoon)|58mm|0.2.2|`PosImageFn.bitImageRaster`: align left only ;<br> `PosImageFn.graphics`: doesn't work ;<br> `Ticket.image`: works ;<br> everything else works (Tested on iOS) |
 | MHT-P8001, MHT-P26, Jepod JP-81LYA ([#1](https://github.com/andrey-ushakov/esc_pos_bluetooth/issues/1#issuecomment-597723277)) |80mm|0.2.2|All 3 image printing methods doens't work ; <br>bold text: No ; <br>westEur code page: No (Tested on iOS) |
 | SmartPos Sp-300 BU |80mm|0.2.8|<ul> <li> Arabic not working  <li> slow when printing image  <li> unhandled exception when printing space </ul> (Tested on Android) |
+| [GOOJPRT PT-210](https://www.amazon.co.uk/Wireless-Bluetooth-Barcode-Thermal-Receipt/dp/B07PFRYZDJ/ref=sr_1_1) | 58mm | 0.4.1 | No issues (Android only) |
