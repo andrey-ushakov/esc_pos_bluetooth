@@ -15,6 +15,7 @@ class PosPrintResult {
   static const ticketEmpty = PosPrintResult._internal(4);
   static const printInProgress = PosPrintResult._internal(5);
   static const scanInProgress = PosPrintResult._internal(6);
+  static const error = PosPrintResult._internal(7);
 
   String get msg {
     if (value == PosPrintResult.success.value) {
