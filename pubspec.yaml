@@ -9,14 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  rxdart: ^0.26.0
-  esc_pos_utils: ^1.1.0
-  # esc_pos_utils:
-  # path: ../esc_pos_utils
   flutter_bluetooth_basic: ^0.1.7
+  hex: ^0.2.0
+  gbk_codec: ^0.4.0
+  image: ^3.0.2
+  rxdart: ^0.26.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
+  assets:
+    - packages/esc_pos_bluetooth/resources/capabilities.json
