@@ -7,5 +7,7 @@
  */
 library esc_pos_bluetooth;
 
+export './model/bluetooth_device.dart';
+export 'src/bluetooth_manager.dart';
 export './src/printer_bluetooth_manager.dart';
 export './utilities/utilities.dart';
