@@ -38,7 +38,6 @@ dependencies:
   rxdart: ^0.26.0
 
 dev_dependencies:
-  build_runner: ^1.0.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
