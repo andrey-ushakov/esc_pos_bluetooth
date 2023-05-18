@@ -1,0 +1,22 @@
+PODS:
+  - esc_pos_bluetooth (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - esc_pos_bluetooth (from `.symlinks/plugins/esc_pos_bluetooth/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  esc_pos_bluetooth:
+    :path: ".symlinks/plugins/esc_pos_bluetooth/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  esc_pos_bluetooth: 2e2427441e9e2fe60a0172994c51511c95a832fc
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+
+PODFILE CHECKSUM: 6b9eb94e9f98a329f2ef624b852a6e42d090af2b
+
+COCOAPODS: 1.11.3
