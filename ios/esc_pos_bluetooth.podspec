@@ -3,7 +3,7 @@
 # Run `pod lib lint flutter_bluetooth_basic.podspec' to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_bluetooth_basic'
+  s.name             = 'esc_pos_bluetooth'
   s.version          = '0.0.1'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC
