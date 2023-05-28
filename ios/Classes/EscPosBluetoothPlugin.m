@@ -1,26 +1,26 @@
-#import "FlutterBluetoothBasicPlugin.h"
+#import "EscPosBluetoothPlugin.h"
 #import "ConnecterManager.h"
 
-@interface FlutterBluetoothBasicPlugin ()
+@interface EscPosBluetoothPlugin ()
 @property(nonatomic, retain) NSObject<FlutterPluginRegistrar> *registrar;
 @property(nonatomic, retain) FlutterMethodChannel *channel;
-@property(nonatomic, retain) BluetoothPrintStreamHandler *stateStreamHandler;
+@property(nonatomic, retain) EscPosBluetoothStreamHandler *stateStreamHandler;
 @property(nonatomic) NSMutableDictionary *scannedPeripherals;
 @end
 
-@implementation FlutterBluetoothBasicPlugin
+@implementation EscPosBluetoothPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:NAMESPACE @"/methods"
+      methodChannelWithName:@"esc_pos_bluetooth/methods"
             binaryMessenger:[registrar messenger]];
-  FlutterEventChannel* stateChannel = [FlutterEventChannel eventChannelWithName:NAMESPACE @"/state" binaryMessenger:[registrar messenger]];
-  FlutterBluetoothBasicPlugin* instance = [[FlutterBluetoothBasicPlugin alloc] init];
+  FlutterEventChannel* stateChannel = [FlutterEventChannel eventChannelWithName:@"esc_pos_bluetooth/state" binaryMessenger:[registrar messenger]];
+  EscPosBluetoothPlugin* instance = [[EscPosBluetoothPlugin alloc] init];
 
   instance.channel = channel;
   instance.scannedPeripherals = [NSMutableDictionary new];
-    
+
   // STATE
-  BluetoothPrintStreamHandler* stateStreamHandler = [[BluetoothPrintStreamHandler alloc] init];
+  EscPosBluetoothStreamHandler* stateStreamHandler = [[EscPosBluetoothStreamHandler alloc] init];
   [stateChannel setStreamHandler:stateStreamHandler];
   instance.stateStreamHandler = stateStreamHandler;
 
@@ -29,21 +29,21 @@
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   NSLog(@"call method -> %@", call.method);
-    
+
   if ([@"state" isEqualToString:call.method]) {
     result(nil);
   } else if([@"isAvailable" isEqualToString:call.method]) {
-    
+
     result(@(YES));
   } else if([@"isConnected" isEqualToString:call.method]) {
-    
+
     result(@(NO));
   } else if([@"isOn" isEqualToString:call.method]) {
     result(@(YES));
   }else if([@"startScan" isEqualToString:call.method]) {
       NSLog(@"getDevices method -> %@", call.method);
       [self.scannedPeripherals removeAllObjects];
-      
+
       if (Manager.bleConnecter == nil) {
           [Manager didUpdateState:^(NSInteger state) {
               switch (state) {
@@ -68,7 +68,7 @@
       } else {
           [self startScan];
       }
-      
+
     result(nil);
   } else if([@"stopScan" isEqualToString:call.method]) {
     [Manager stopScan];
@@ -78,12 +78,12 @@
     @try {
       NSLog(@"connect device begin -> %@", [device objectForKey:@"name"]);
       CBPeripheral *peripheral = [_scannedPeripherals objectForKey:[device objectForKey:@"address"]];
-        
+
       self.state = ^(ConnectState state) {
         [self updateConnectState:state];
       };
       [Manager connectPeripheral:peripheral options:nil timeout:2 connectBlack: self.state];
-      
+
       result(nil);
     } @catch(FlutterError *e) {
       result(e);
@@ -98,7 +98,7 @@
   } else if([@"writeData" isEqualToString:call.method]) {
        @try {
            NSDictionary *args = [call arguments];
-           
+
            NSMutableArray *bytes = [args objectForKey:@"bytes"];
 
            NSNumber* lenBuf = [args objectForKey:@"length"];
@@ -122,15 +122,15 @@
 -(void)startScan {
     [Manager scanForPeripheralsWithServices:nil options:nil discover:^(CBPeripheral * _Nullable peripheral, NSDictionary<NSString *,id> * _Nullable advertisementData, NSNumber * _Nullable RSSI) {
         if (peripheral.name != nil) {
-            
+
             NSLog(@"find device -> %@", peripheral.name);
             [self.scannedPeripherals setObject:peripheral forKey:[[peripheral identifier] UUIDString]];
-            
+
             NSDictionary *device = [NSDictionary dictionaryWithObjectsAndKeys:peripheral.identifier.UUIDString,@"address",peripheral.name,@"name",nil,@"type",nil];
             [_channel invokeMethod:@"ScanResult" arguments:device];
         }
     }];
-    
+
 }
 
 -(void)updateConnectState:(ConnectState)state {
@@ -158,7 +158,7 @@
                 ret = @0;
                 break;
         }
-        
+
          NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:ret,@"id",nil];
         if(_stateStreamHandler.sink != nil) {
           self.stateStreamHandler.sink([dict objectForKey:@"id"]);
@@ -168,7 +168,7 @@
 
 @end
 
-@implementation BluetoothPrintStreamHandler
+@implementation EscPosBluetoothStreamHandler
 
 - (FlutterError*)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
   self.sink = eventSink;
