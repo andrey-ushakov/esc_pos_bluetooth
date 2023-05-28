@@ -7,12 +7,11 @@ import '../model/bluetooth_device.dart';
 
 /// A BluetoothManager.
 class BluetoothManager {
-  static const String NAMESPACE = 'flutter_bluetooth_basic';
   static const int CONNECTED = 1;
   static const int DISCONNECTED = 0;
 
-  static const MethodChannel _channel = const MethodChannel('$NAMESPACE/methods');
-  static const EventChannel _stateChannel = const EventChannel('$NAMESPACE/state');
+  static const MethodChannel _channel = const MethodChannel('esc_pos_bluetooth/methods');
+  static const EventChannel _stateChannel = const EventChannel('esc_pos_bluetooth/state');
 
   Stream<MethodCall> get _methodStream => _methodStreamController.stream;
   final StreamController<MethodCall> _methodStreamController = StreamController.broadcast();
