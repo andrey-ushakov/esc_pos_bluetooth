@@ -1,6 +1,6 @@
 # esc_pos_bluetooth_example
 
-A new Flutter project.
+Demonstrates how to use the esc_pos_bluetooth plugin.
 
 ## Getting Started
 

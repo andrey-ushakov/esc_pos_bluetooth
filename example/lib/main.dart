@@ -1,7 +1,5 @@
 import 'package:esc_pos_bluetooth/esc_pos_bluetooth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image/image.dart' as img;
 import 'package:intl/intl.dart';
 
 void main() {
@@ -91,14 +89,14 @@ Future<List<int>> demoReceipt(Generator generator) async {
   List<int> bytes = [];
 
   // Print image
-  final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
-  final Uint8List imageBytes = data.buffer.asUint8List();
-  final img.Image image = img.decodeImage(imageBytes)!;
-  bytes += generator.image(image);
+  // final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
+  // final Uint8List imageBytes = data.buffer.asUint8List();
+  // final img.Image image = img.decodeImage(imageBytes)!;
+  // bytes += generator.image(image);
 
   // Print QR Code using native function
-  bytes += generator.hr();
-  bytes += generator.qrcode('example.com');
+  // bytes += generator.hr();
+  // bytes += generator.qrcode('example.com');
 
   bytes += generator.hr();
   bytes += generator.text(
