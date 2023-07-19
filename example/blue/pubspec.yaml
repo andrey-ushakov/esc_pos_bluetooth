@@ -6,20 +6,19 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
+  charset_converter: ^2.0.0
   cupertino_icons: ^1.0.3
-  oktoast: ^3.0.0
-  image: ^3.0.2
   esc_pos_bluetooth:
     path: ../../
   esc_pos_utils: ^1.1.0
-  # esc_pos_utils:
-  # path: ../../../esc_pos_utils
-  charset_converter: ^2.0.0
+  flutter:
+    sdk: flutter
+  image: ^3.0.2
   intl: ^0.17.0
-  qr_flutter: ^4.0.0
+  oktoast: ^3.0.0
   path_provider: ^2.0.2
+  permission_handler: ^10.4.3
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:
